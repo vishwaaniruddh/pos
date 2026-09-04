@@ -1,258 +1,137 @@
-<?php  include('../db_connection.php');
-
-function round_amount($amount){
-$amount = (int)$amount;
-$add_amount = 0;
-
-    $round_num = substr( $amount, -2);
-    
-        if($round_num < 50 && $round_num!=00 ){
-            $add_amount = 50 - $round_num;  
-        
-        }
-        if($round_num > 50 && $round_num != 00 ){
-            $add_amount = 100 - $round_num;  
-        }
-    $new_amount = $amount + $add_amount; 
-    
-    return $new_amount;            
-
-}
-
-
-$jewelid = $_REQUEST['jewelid'];
-
-$get_id = $jewelid ; 
-
-$pathmain ='https://srishringarr.com/yn/';
-
-
-if($get_id==0 && $get_type==1 && $viewall == 4 ){
- $all = "'2','1','6','3','68','4'";
- $necklace=1;
-}
-
-if($get_id==1 ||$get_id==2 ||$get_id==3 ||$get_id==4 ||$get_id==6||$get_id==68){
-    if($type==1){
-      $necklace=1;
-    }
-}
-
-if($get_id==0 && $get_type==1 && $viewall == 76 ){
- $all = "'59','74','75','76','77','78','79','80'";
-}
-
-
-
-   if($all){
-    $sql_query = "select product_id, product_image, product_code, product_name, product_desc, date_added, categories_id, subcategory, subcat_id, maincatagory, 
-    subcatagoty, sales_price, rent_price, itemid, product_new_imageid, deposit, facebook, Instagram, Google, Twitter, Pinterest, flipkart, amazon, discount,
-    total_amt, seen_count, is_customized, is_color_same, is_pattern_same, is_piece_same, cgst, sgst, igst, short_desc, brand_color,
-    youtube,CAST(REGEXP_SUBSTR(product_code,'[0-9]+') AS UNSIGNED) as sku,newProductName,ss_product_name from `product` where subcat_id in($all) order by sku desc";
-   }else{
-    $sql_query = "select product_id, product_image, product_code, product_name, product_desc, date_added, categories_id, subcategory, subcat_id, maincatagory,
-    subcatagoty, sales_price, rent_price, itemid, product_new_imageid, deposit, facebook, Instagram, Google, Twitter, Pinterest, flipkart, amazon, discount, 
-    total_amt, seen_count, is_customized, is_color_same, is_pattern_same, is_piece_same, cgst, sgst, igst, short_desc, brand_color, youtube,
-    CAST(REGEXP_SUBSTR(product_code,'[0-9]+') AS UNSIGNED) as sku,newProductName,ss_product_name from `product` where subcat_id='".$get_id."' order by sku desc";
-}
-
-// echo $sql_query ; 
-
-
-// echo '<br />';
-
-$raw_data = mysqli_query($web_con,$sql_query);
-$i = 1;
-$cur_sym = $currency_symbol;
-
-
-?>
-<div class="row">
-    
-    
 <?php
-while($row = mysqli_fetch_array($raw_data)){
-      
-      
-        $deposit = 0;
-        $product_id = $row[0];    
-        $prcode=$row[2];
-        $sku = $prcode;
-          
-          
-           $re = mysqli_query($con,"SELECT unit_price,quantity FROM phppos_items where name like '".$prcode."'");
-        $rero=mysqli_fetch_array($re);
-        
-    
+$apiAutoload = dirname(dirname(__DIR__)) . '/API/autoload.php';
+if (file_exists($apiAutoload)) {
+    require_once $apiAutoload;
+}
+include_once(__DIR__ . '/../db_connection.php');
 
-    $qty = 0;
-        $qty=$rero['quantity'];
-        if($qty && $qty > 0){
-            
-            
-            $re1 = mysqli_query($con,"select sum(commission_amt) as commision_amount from order_detail where item_id='".$prcode."' and 
-        bill_id in(select bill_id from phppos_rent where booking_status!='Booked')");
-        $rero1=mysqli_fetch_array($re1);
-        
-        
-        
-            $mrp = $unitPrice = $rero['unit_price'];
-            $commissionAmount = $rero1['commision_amount'] ;
-            $currentsp = $unitPrice - $commissionAmount ;   
-        
-        $lastSellingPrice = 0 ; 
-        $sellingPriceCalculation = $mrp - $commissionAmount ; 
-        
-        $sellingPriceCalculationPrecentageAmount = $sellingPriceCalculation * 0.4 ; 
-        $sellingPriceCalculation = $sellingPriceCalculation - $sellingPriceCalculationPrecentageAmount  ;  
+$jewelid = isset($_REQUEST['jewelid']) ? trim($_REQUEST['jewelid']) : '';
 
-        if($mrp>=10000){
-            if($sellingPriceCalculation < 5000){
-                $lastSellingPrice = 5000 ; 
-
-            }else{
-                $lastSellingPrice = $sellingPriceCalculation ;
-
-            }
-        }else if($mrp < 10000){
-            if($sellingPriceCalculation<3000){
-                $lastSellingPrice = 3000 ; 
-            }else{
-                $lastSellingPrice = $sellingPriceCalculation ; 
-            }
-        }
-        
-        
-        if($currentsp > 0 ) {
-                            if($mrp<=10000){
-                               $courier = 1000;
-                               $rentprice=$mrp*0.20;
-                               $addedRentPrice = $courier + $rentprice ;
-                               $deposit = $mrp * 0.35 ;
-                            }else {
-                               $courier = 2000;
-                                if($currentsp<=40000){
-                                    $rentprice=$currentsp*0.20; 
-                                } else if($currentsp<=60000){
-                                    $rentprice=$currentsp*0.17; 
-                                } else{
-                                    $rentprice=$currentsp*0.15; 
-                                }
-                                $addedRentPrice = $courier + $rentprice ;
-                                if($addedRentPrice < 3000){
-                                    $addedRentPrice = 3000 ; 
-                                }
-                                
-                                $deposit = $currentsp * 0.35 ; 
-                                    if($deposit<3000){
-                                        $deposit = 3000 ; 
-                                    }
-                                    
-                                
-                            }
-        }
-        else{
-                            if($mrp<=10000){
-                               $courier = 1000;
-                               $rentprice=$mrp*0.20;
-                               $addedRentPrice = $courier + $rentprice ;
-                               $deposit = $mrp * 0.35 ;
-                            }else{
-                                $deposit = 3000 ;
-                                $addedRentPrice = 3000 ;                                 
-                            }   
-         }
-        
-        $deposit =  round_amount($deposit);  
-        $addedRentPrice = round_amount($addedRentPrice) ; 
-        
-        
-           $sqlimg="SELECT img_name FROM `product_images_new` WHERE `product_id`='".$product_id."'";
-            $qryimg = mysqli_query($web_con,$sqlimg);
-            $rowimg = mysqli_fetch_row($qryimg);
-             if($youtube){
-                $ytarray=explode("/", $youtube);
-                $ytendstring=end($ytarray);
-                $ytendarray=explode("?v=", $ytendstring);
-                $ytendstring=end($ytendarray);
-                $ytendarray=explode("&", $ytendstring);
-                $ytcode=$ytendarray[0];
-                $imgframe =  "<iframe title=\"\" width=\"100%\" height=\"315\"  src=\"https://www.youtube.com/embed/$ytcode\" autoplay=\"0\"  frameborder=\"0\" allowfullscreen  loading=\"lazy\"></iframe>";
-            }
-            else if($rowimg){
-                $path = ($pathmain."uploads".$rowimg[0]);
-                $source_img = trim("yn/uploads".$rowimg[0]);
-                $filename = basename($source_img);
-                $_file_parent = "https://srishringarr.com/";
-                $_new_filename = $_file_parent.$source_img;
-                if(!file_exists($_new_filename)){
-                   $destination_img =  $path;
-                }else{
-                    $destination_img =  str_replace($filename,'',$source_img) .'com_'.$filename;
-                }
-                $imgframe = '<img class="lazyload img-fluid product_img" loading="lazy" style="width: 100%; object-fit: contain; user-select: auto;" src="//images.weserv.nl/?url='.$destination_img.'&w=400&h=300" alt="'.$product_name.'">';
-            }
-        
-        
-        $link = "jewel_detail.php?id=$product_id&days=3";
-        $newProductName = $row['newProductName'];
-        if($newProductName){
-            $link = 'jewel/'.$newProductName.'&days=3' ; 
-        }
-              
-              
-if(isset($row['rent_price']) && $row['rent_price'] > 0 ){
-    $addedRentPrice = $row['rent_price'] + $courier;
+if (empty($jewelid)) {
+    echo '<div class="alert alert-warning my-2 text-center py-2" style="font-size: 13px;"><i class="fa fa-info-circle"></i> Please select a jewellery category.</div>';
+    exit;
 }
 
-if(isset($row['deposit']) && $row['deposit'] > 0 ){
-    $deposit = $row['deposit'];
+// Fetch directly from the unified ProductService engine
+$service = new \API\Services\ProductService();
+$result = $service->fetchProducts([
+    'category' => 'jewel_sub:' . (int)$jewelid,
+    'type' => 'jewellery',
+    'limit' => 2000,
+    'page' => 1,
+    'min_price' => 0,
+    'max_price' => 10000000
+]);
+
+$products = $result['products'] ?? [];
+if (empty($products)) {
+    // Fallback to check main category
+    $result = $service->fetchProducts([
+        'category' => 'jewel_main:' . (int)$jewelid,
+        'type' => 'jewellery',
+        'limit' => 2000,
+        'page' => 1,
+        'min_price' => 0,
+        'max_price' => 10000000
+    ]);
+    $products = $result['products'] ?? [];
 }
 
+$total_products = count($products);
 
-if(isset($row['sales_price']) && $row['sales_price'] > 0){
-    $lastSellingPrice = $row['sales_price'];
+if ($total_products === 0) {
+    echo '<div id="categoryProductStats" data-total="0" style="display:none;"></div>';
+    echo '<div class="alert alert-info my-2 text-center py-2" style="font-size: 13px;"><i class="fa fa-info-circle"></i> No products found in this category.</div>';
+    exit;
 }
-  
-                
- 
- ?>
- 
-    <div class="col-sm-3 product_grid" style="margin: 10px auto;" data-selling_price = <?= $lastSellingPrice ;?> data-rent_price = <?= $addedRentPrice ;?> >
-<img src="<?php echo $destination_img ; ?>" style="width:100%;" />
-
-        <hr />
-        SKU: <strong><?= $sku; ?></strong>
-        <p class="rent_price">Rent Price : <?= $addedRentPrice ; ?></p>
-        <p class="selling_price">Selling Price : <?= $lastSellingPrice ; ?></p>
-        
-        
-        <button class="btn btn-primary addInExclusiveCollection" data-productid="<?= $product_id; ?>"  data-image="<?= $destination_img; ?>" data-sku="<?= $sku; ?>" data-link="<?= $link; ?>"> Add </button>
-    </div>
- <?php
-}
-}
-
 ?>
 
+<div id="categoryProductStats" data-total="<?php echo $total_products; ?>" style="display:none;"></div>
+
+<div class="row g-2" id="productsGridContainer">
+    <?php
+    foreach ($products as $p) {
+        $product_id = (int)$p['id'];
+        $sku = trim($p['code']);
+        $product_name = trim($p['name'] ?? '');
+        $details = $p['details'] ?? [];
+
+        $rentPrice = (float)($details['rent_price'] ?? 0);
+        $salePrice = (float)($details['sale_price'] ?? 0);
+        $mrp = (float)($details['mrp'] ?? 0);
+        $inventory = (int)($details['inventory'] ?? 0);
+
+        $imgUrl = !empty($p['images'][0]) ? $p['images'][0] : ($details['image_path'] ?? 'https://srishringarr.com/static/images/default.jpg');
+        $combinedString = $sku . '-' . $product_id;
+        $link = 'jewel_detail.php?id=' . $product_id . '&days=3';
+    ?>
+        <div class="col-xxl-2 col-xl-2 col-lg-3 col-md-4 col-sm-6 mb-2 product_grid"
+             id="card-<?php echo htmlspecialchars($product_id); ?>"
+             data-productid="<?php echo htmlspecialchars($product_id); ?>"
+             data-sku="<?php echo htmlspecialchars($sku); ?>"
+             data-combined="<?php echo htmlspecialchars($combinedString); ?>"
+             data-name="<?php echo htmlspecialchars(strtolower($product_name . ' ' . $sku)); ?>"
+             data-selling_price="<?php echo $salePrice; ?>"
+             data-rent_price="<?php echo $rentPrice; ?>"
+             data-qty="<?php echo $inventory; ?>">
+            
+            <div class="compact-product-card">
+                <div class="card-thumb-box">
+                    <img src="<?php echo htmlspecialchars($imgUrl); ?>" 
+                         alt="<?php echo htmlspecialchars($sku); ?>"
+                         loading="lazy" 
+                         class="card-thumb-img" 
+                         onerror="this.src='https://srishringarr.com/static/images/default.jpg';" />
+                    
+                    <span class="card-qty-badge <?php echo ($inventory > 0) ? 'in-stock' : 'out-stock'; ?>">
+                        Qty: <?php echo $inventory; ?>
+                    </span>
+                </div>
+
+                <div class="card-info-box">
+                    <div class="d-flex justify-content-between align-items-center mb-1">
+                        <span class="card-sku" title="<?php echo htmlspecialchars($sku); ?>">
+                            <?php echo htmlspecialchars($sku); ?>
+                        </span>
+                        <?php if ($mrp > 0): ?>
+                            <span class="card-mrp" title="MRP">₹<?php echo number_format($mrp, 0); ?></span>
+                        <?php endif; ?>
+                    </div>
+
+                    <div class="card-title-text" title="<?php echo htmlspecialchars($product_name); ?>">
+                        <?php echo htmlspecialchars($product_name); ?>
+                    </div>
+
+                    <div class="card-prices-grid">
+                        <div class="card-price-col rent">
+                            <span class="col-lbl">Rent</span>
+                            <span class="col-val">₹<?php echo number_format($rentPrice, 0); ?></span>
+                        </div>
+                        <div class="card-price-col sell">
+                            <span class="col-lbl">Sell</span>
+                            <span class="col-val">₹<?php echo number_format($salePrice, 0); ?></span>
+                        </div>
+                    </div>
+
+                    <button type="button" 
+                            class="btn btn-card-action addInExclusiveCollection" 
+                            data-productid="<?php echo htmlspecialchars($product_id); ?>" 
+                            data-image="<?php echo htmlspecialchars($imgUrl); ?>" 
+                            data-sku="<?php echo htmlspecialchars($sku); ?>" 
+                            data-link="<?php echo htmlspecialchars($link); ?>">
+                        <i class="fa fa-plus"></i> Add
+                    </button>
+                </div>
+            </div>
+        </div>
+    <?php } ?>
 </div>
 
-
-
- <script>
-    $(document).ready(function() {
-        $('.addInExclusiveCollection').click(function() {
-            var image = $(this).data('image');
-            var sku = $(this).data('sku');
-            var link = $(this).data('link');
-            
-            var dataToSend = {
-                image: image,
-                sku: sku,
-                link: link,
-                type:'Jewel'
-            };
-           
-        });
-    });
+<script>
+    if (typeof updateProductCountsAfterFilter === 'function') {
+        updateProductCountsAfterFilter();
+    }
+    if (typeof refreshCardButtonsState === 'function') {
+        refreshCardButtonsState();
+    }
 </script>

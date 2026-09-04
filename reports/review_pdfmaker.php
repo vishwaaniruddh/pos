@@ -30,9 +30,9 @@ if (file_exists('../top-navbar.php')) include_once('../top-navbar.php');
         if (!$web_con || $web_con->connect_error) {
             $is_local = isset($_SERVER['HTTP_HOST']) && (in_array($_SERVER['HTTP_HOST'], ['localhost', '127.0.0.1', '::1']) || strpos($_SERVER['HTTP_HOST'], 'localhost:') === 0);
             if ($is_local) {
-                $web_con = @mysqli_connect("localhost", "root", "", "u464193275_srishringarr");
+                $web_con = @mysqli_connect("localhost", "root", "", "u464193275_srishrinjewels");
             } else {
-                $web_con = ($con && $con !== true) ? $con : @mysqli_connect("localhost", "u464193275_sarmicropos", "Mypos1234", "u464193275_srishringarr");
+                $web_con = ($con && $con !== true) ? $con : @mysqli_connect("localhost", "u464193275_sarmicropos", "Mypos1234", "u464193275_srishrinjewels");
             }
         }
     }
