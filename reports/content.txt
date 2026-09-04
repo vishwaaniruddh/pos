@@ -1,0 +1,299 @@
+	<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+	<html xmlns="http://www.w3.org/1999/xhtml">
+
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<title>SHRINGAAR</title>
+	</head>
+	<script type="text/javascript" src="paging.js"></script>
+	<script type="text/javascript">
+		function PrintDiv() {
+			var divToPrint = document.getElementById('bill');
+			divToPrint.style.fontSize = "12px";
+			var popupWin = window.open('', '_blank', 'width=800,height=500');
+			popupWin.document.open();
+			popupWin.document.write('<html><body onload="window.print()">' + divToPrint.innerHTML + '</html>');
+			popupWin.document.close();
+		}
+	</script>
+
+<style>
+    th,td{
+        padding:5px;
+    }
+</style>
+
+	<body>
+		<div id="bill" style="font-size:12px;">
+			<p style="text-align:center;"><B><U> INVOICE </U></B></p>
+			
+			<table width="825" border="0" align="center">
+				<tr>
+					<td width="819" height="42">
+					    <table width="100%">
+       <tr>
+          
+          <td style="padding:0px; margin:0px;    width: 33%;">
+              <!--<div><u><b style="">We Rent, Sell And Customise </b></u></div>-->
+              <!--<ul style="margin:0;font-size:10px;">-->
+              <!--    <li>Bridal Jewellery & Accessories</li>-->
+              <!--    <li>Lehenga, Evening Gowns, Blouse</li>-->
+              <!--    <li>All Kinds Of Jewellery & Outfits</li>-->
+              <!--</ul>-->
+              <!--<br>-->
+              
+              
+              
+              
+              
+                    
+                                          
+                     
+                    <!--<div style="text-align:left"> <img src="img/sakarQR.jpg" width="120px"> </div>-->
+                    <!--<div style="text-align:left;font-size:14px;"> <b>UPI ID: 237382406008836@cnrb</b> </div>-->
+                    
+                    <div style="text-align:left"> <img src="img/sakarQRICICI.jpeg" width="120px"> </div>
+                    <div style="text-align:left;font-size:14px;"> <b>UPI ID: MSSAKARTRADELINK.eazypay@icici</b> </div>
+                    
+                    <br/>
+                    
+                                         
+              
+              
+              
+              
+              
+              
+
+
+
+              
+          </td>
+          
+              <!--<img src="sri_logo.jpg" width="250px"/ style="padding-right:70px">-->
+              
+              
+                                  
+                 
+          <td style=" padding: 0px; margin:0px; text-align: center;     width: 33%;">
+              <h1 style="text-align:center;letter-spacing: 8px;margin:0;white-space: nowrap;">SAKAR TRADE LINK</h1>
+              <span>GSTIN:27AAGPP0302A1ZH</span>
+              <hr>
+<img src="./img/ss_fly.png" width="250px">
+</td>
+ 
+
+          
+          <td style="padding:0px; margin:0px; text-align: right;    width: 33%;">
+              <div>Shyamkamal Building B,</div>
+              <div>Wing B/1, Flat No.104,1st Floor,</div>
+              <div>Agarwal Market, Vile Parle (East),</div>
+              <div>Mumbai-400057, India.</div>
+              <div>Phone - +91-9324243011/ +91-7400413163</div>
+              <div>Email - rajanipodar@gmail.com</div>
+          </td>
+       
+       </tr>
+       </table>
+       <br>
+       <hr style="margin:3px;border-top: 1px solid #000;">
+
+    
+    <table width="100%">
+        <tr>
+            <div class="col-md-3">
+                
+                
+                
+            
+
+
+
+                <td>
+              
+              
+              
+                      <!--<div><b><u>Bank Account Details</u></b></div><br>-->
+        <!--<div >SAKAR TRADE LINK</div>-->
+        <!--      <div style="">Account number: 50231010008836</div>-->
+        <!--      <div style="">IFSC: CNRB0015023</div>-->
+        <!--      <div style="">Bank name: CANARA BANK</div>-->
+        <!--      <div style="">Branch: VILE PARLE EAST </div>-->
+    <br>
+                    <div style="width: 300px; height:15px;"><b> Name :</b>Suman Garg Vapi</div>
+                    <div style="height:15px;"><b>Contact No: </b>8097712569</div>
+                    <div style=""><b> Address : </b></div>
+                    <div style="height:15px;"><b> 2nd Person Name : </b>&nbsp;&nbsp;&nbsp; </div>
+                    <div style="height:15px;"><b> 2nd Contact No.: </b>&nbsp;&nbsp;&nbsp; 0</div>
+               </td>
+            </div>
+            
+            
+            <div class="col-md-9">
+                <td>
+               <div style="width: 220px;height:15px;"><b> Through Name: </b>
+                              
+               </b></div><br/>
+               <div style=""><b> Through Contact No:</b> </div><br/>
+               <!--<div style="height:15px;"><b> Pick-Up By: </b>&nbsp;</div>-->
+                <div style="height:15px;"><b> Pick-Up By: </b>&nbsp;</div>
+               <div style="height:15px;">
+               <b>Delivery By</b> :<b></b></div><br/> 
+               
+               
+            <div style="height:15px;"> <b> Pick-Up Date : </b>
+    	      <b>
+    	          06/11/2024    	      </b>
+            </div>
+        	             
+                <div style="height:15px;"><b>Delivery Date : </b> &nbsp;<b>17/11/2024</b></div>     
+           </td>
+           <td>
+               <div style="width: 320px;"><b> Bill. No. </b>6285<br/><b> Date: </b>05/09/2024</div>
+               <div style="width: 320px;">
+                   <br>
+                   <b font-size:11px;><u>TERMS & CONDITION:</u></b>
+            <ul style="padding: 0;" >
+              
+              <li><b>Once an order Is Booked, it will not be changed, exchange or cancelled.</b></li>
+              <li>Rental is for 3 days only, 5% extra for each day.</li>
+              <li>Security deposit is compulsory.</li>
+              <li>Any damage done will be deducted from the security deposit.</li>
+              <li><b>No money will be refunded under any circumstances.</b></li>
+              <li>Subject to Mumbai Jurisdiction.</li>
+            </ul>
+               </div>
+           </td>
+            </div>
+        </tr>
+        
+       
+</table>
+
+  <table width="100%" border="1" cellpadding="4" cellspacing="0" id="results">
+  <tr>
+  <th style="padding:3px;" width="96"><center>SR NO.</center></th>
+    <th style="padding:3px;" width="96"><center>ITEM CODE</center></th>
+    <th style="padding:3px;" width="130"><center>PARTICULARS</center></th>
+    <th style="padding:3px;" width="96"><center>DESCRIPTION</center></th>
+    <th style="padding:3px;" width="86"><center>MRP</center></th>
+    <th style="padding:3px;" width="86"><center>QTY</center></th>
+    <th style="padding:3px;" width="110"><center>RENT</center></th>
+    <th style="padding:3px;" width="119"><center>DEPOSIT</center></th>
+    <th style="padding:3px;" width="88"><center>TAXABLE RENT</center></th>
+				</tr>
+									<tr>
+						<td align="center">
+							1						</td>
+						<td align="center">
+							FM3987-5						</td>
+						<td align="center">
+							Lehengas						</td>
+						<td align="center">
+							Lehenga,Blouse,Dupatta,Potli and Belt						</td>
+						<td align="center">
+							120000.00						</td>
+						
+						<td align="center">
+							1						</td>
+						<td align="center">
+							19000						</td>
+						<td align="center">
+							24000						</td>
+						
+						<td align="center">
+							16964						</td>
+					</tr>
+					
+					
+					
+																			<tr>
+								    <td colspan="3" align="left"><b> Bill Made By: </b>Nipa Agrawal</td>
+									<td colspan="3" align="right"><b> Total Quantity: </b>1</td>
+																			<td align="right" colspan="3"> <b> Total Rent (Including GST):</b>&nbsp;&nbsp;
+											19000										</td>
+								</tr>
+								
+								
+								
+                                              
+              
+                    <tr>
+                        <td colspan="3"><b>CGST : </b> 1018 </td>
+                        <td colspan="3"><b>SGST : </b> 1018 </td>
+                        <td colspan="3"><b>Total GST : </b> 2036 </td>
+                    </tr>
+              
+								
+								
+								
+								
+								<tr>
+								    								    
+								        <td colspan="2" align="left"><b> Mode of Payment :  </b>Cash</td>
+    <td colspan="1.5" align="center"><b> Deposit : </b>Unpaid</td>
+    <td colspan="2" align="center"><b> Deposit Amount : </b>24000</td>
+    <td colspan="2" align="center"><b>Paid Amount :</b><b>Rs.19000</b></td>
+    <td colspan="2" align="center"> <b>Balance : </b><b>0</b></td>
+    
+								    
+
+                                 </tr>
+                                 
+                                  <tr>
+                                    <td colspan="11"><b>Trial Date : </b> 0000-00-00</td>     
+                                 </tr>
+                                 
+                                  <tr>
+                                    <td colspan="3" align="left"><b> Measurement :  </b>yes</td>
+                                    <td colspan="8" align="left"><b> Measurement Note : </b></td>
+                                
+                                 </tr>
+                                 
+                                  <tr>
+                                    <td colspan="11"><b>Delivery : </b> yes</td>     
+                                 </tr>
+                                 
+                                 <tr>
+                                    <td colspan="11"><b>Note : </b> No Trial.Courier to be dispatch on 6/11/2024.And courier charges to be deducted from Deposit.Function is on 12/11/2024.</td>     
+                                 </tr>
+                                 
+                                 <tr>
+                                    <td colspan="4" align="left"><b> Given By :  </b></td>
+                                    <td colspan="10" align="left"><b> Taken By : </b></td>
+                                
+                                 </tr>
+			</table>
+
+			</td>
+			</tr>
+			<tr>
+				<td align="right">&nbsp;&nbsp;</td>
+			</tr>
+
+			<tr>
+				<td>
+					<hr/>
+					
+				</td>
+			</tr>
+			</table>
+			<div style="width:826px; margin:auto; padding-top: 15px; text-align: right; padding-bottom: 11px;">
+    
+    
+                            <p><b>SAKAR TRADE LINK</b></p>
+              </div>
+
+
+<div style="width:826px; margin:auto; text-align: right; padding: 40px;"> 
+    <p><b>AUTH. SIGNATORY</b></p>
+</div>
+		</div>
+		<br/>
+		<br/>
+		<div id="pageNavPosition"></div>
+		<center><a href="#" onclick='PrintDiv();'>Print</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="/rentReport.php">Back</a></center>
+	</body>
+
+	</html>
+	
