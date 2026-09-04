@@ -12,10 +12,13 @@ if (empty($jewelid)) {
     exit;
 }
 
+// Normalize category parameter (supports jewel_main:X, jewel_sub:X, or numeric ID)
+$catParam = (strpos($jewelid, ':') !== false) ? $jewelid : ('jewel_sub:' . (int)$jewelid);
+
 // Fetch directly from the unified ProductService engine
 $service = new \API\Services\ProductService();
 $result = $service->fetchProducts([
-    'category' => 'jewel_sub:' . (int)$jewelid,
+    'category' => $catParam,
     'type' => 'jewellery',
     'limit' => 2000,
     'page' => 1,
@@ -24,10 +27,11 @@ $result = $service->fetchProducts([
 ]);
 
 $products = $result['products'] ?? [];
-if (empty($products)) {
-    // Fallback to check main category
+if (empty($products) && strpos($catParam, 'jewel_sub:') === 0) {
+    // Fallback in case a raw parent ID was passed without prefix
+    $rawId = (int)str_replace('jewel_sub:', '', $catParam);
     $result = $service->fetchProducts([
-        'category' => 'jewel_main:' . (int)$jewelid,
+        'category' => 'jewel_main:' . $rawId,
         'type' => 'jewellery',
         'limit' => 2000,
         'page' => 1,

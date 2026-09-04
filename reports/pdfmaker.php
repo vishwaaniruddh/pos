@@ -503,13 +503,51 @@ if (file_exists('../top-navbar.php')) include_once('../top-navbar.php');
                                 <select id="jewelid" name="jewelid" class="form-select form-control pm-input-sm">
                                     <option value="">-- Choose Jewellery Category --</option>
                                     <?php
-                                    if ($web_con) {
-                                        $garsql = mysqli_query($web_con, "SELECT * FROM subcat1 ORDER BY name ASC");
-                                        if ($garsql) {
-                                            while ($garsql_result = mysqli_fetch_assoc($garsql)) {
-                                                $name = $garsql_result['name'];
-                                                $subcat_id = $garsql_result['subcat_id'];
-                                                echo '<option value="' . htmlspecialchars($subcat_id) . '">' . htmlspecialchars(ucwords(strtolower($name))) . '</option>';
+                                    $apiAutoload = dirname(dirname(__DIR__)) . '/API/autoload.php';
+                                    if (file_exists($apiAutoload)) {
+                                        require_once $apiAutoload;
+                                    }
+
+                                    if (class_exists('API\Models\CategoryModel')) {
+                                        $categoryModel = new \API\Models\CategoryModel();
+                                        $allCats = $categoryModel->getAllCategories();
+                                        foreach ($allCats as $catGroup) {
+                                            if ($catGroup['category'] === 'Jewellery') {
+                                                foreach ($catGroup['items'] as $item) {
+                                                    $parentName = htmlspecialchars($item['name']);
+                                                    $parentId = htmlspecialchars($item['id']);
+                                                    $children = $item['children'] ?? [];
+
+                                                    if (!empty($children)) {
+                                                        echo '<optgroup label="' . $parentName . '">';
+                                                        echo '<option value="' . $parentId . '">All ' . $parentName . '</option>';
+                                                        foreach ($children as $child) {
+                                                            echo '<option value="' . htmlspecialchars($child['id']) . '">&nbsp;&nbsp;↳ ' . htmlspecialchars($child['name']) . '</option>';
+                                                        }
+                                                        echo '</optgroup>';
+                                                    } else {
+                                                        echo '<option value="' . $parentId . '">' . $parentName . '</option>';
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    } else if ($web_con) {
+                                        $mainQry = mysqli_query($web_con, "SELECT subcat_id, categories_name FROM jewel_subcat WHERE mcat_id IN (1, 3) ORDER BY categories_name");
+                                        if ($mainQry) {
+                                            while ($mRow = mysqli_fetch_assoc($mainQry)) {
+                                                $mId = $mRow['subcat_id'];
+                                                $mName = ucwords(strtolower($mRow['categories_name']));
+                                                $subQry = mysqli_query($web_con, "SELECT subcat_id, name FROM subcat1 WHERE maincat_id = $mId AND status = 1 ORDER BY name");
+                                                if ($subQry && mysqli_num_rows($subQry) > 0) {
+                                                    echo '<optgroup label="' . htmlspecialchars($mName) . '">';
+                                                    echo '<option value="jewel_main:' . $mId . '">All ' . htmlspecialchars($mName) . '</option>';
+                                                    while ($sRow = mysqli_fetch_assoc($subQry)) {
+                                                        echo '<option value="jewel_sub:' . $sRow['subcat_id'] . '">&nbsp;&nbsp;↳ ' . htmlspecialchars(ucwords(strtolower($sRow['name']))) . '</option>';
+                                                    }
+                                                    echo '</optgroup>';
+                                                } else {
+                                                    echo '<option value="jewel_main:' . $mId . '">' . htmlspecialchars($mName) . '</option>';
+                                                }
                                             }
                                         }
                                     }
