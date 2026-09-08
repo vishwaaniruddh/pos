@@ -810,6 +810,7 @@ if ($sheet_id === 0) {
             <div class="stat-badge">Scanned Rows: <strong id="stat_total_items">0</strong></div>
             <div class="stat-badge">System Qty: <strong id="stat_system_qty">0</strong></div>
             <div class="stat-badge">Scanned Qty: <strong id="stat_scanned_qty" style="color: var(--sheet-green);">0</strong></div>
+            <div class="stat-badge">Available - Scanned: <strong id="stat_diff_qty" style="color: #d97706;">0</strong></div>
         </div>
     </div>
 
@@ -826,6 +827,7 @@ if ($sheet_id === 0) {
                     <th>D</th>
                     <th>E</th>
                     <th>F</th>
+                    <th>G</th>
                     <th class="btn-action"></th>
                 </tr>
                 <!-- Row 2: Table Column Titles -->
@@ -837,6 +839,7 @@ if ($sheet_id === 0) {
                     <th style="text-align: right;">Price (₹)</th>
                     <th style="text-align: right;">Available Qty</th>
                     <th style="text-align: center;">Scanned Qty</th>
+                    <th style="text-align: right;">Available - Scanned</th>
                     <th class="btn-action" style="text-align: center;">Action</th>
                 </tr>
                 <!-- Row 3: Column Filters -->
@@ -850,6 +853,7 @@ if ($sheet_id === 0) {
                     <th><input type="text" class="col-filter-input" data-col="price" placeholder="Filter Price..." autocomplete="off"></th>
                     <th><input type="text" class="col-filter-input" data-col="availqty" placeholder="Filter Qty..." autocomplete="off"></th>
                     <th><input type="text" class="col-filter-input" data-col="scannedqty" placeholder="Filter Scanned..." autocomplete="off"></th>
+                    <th><input type="text" class="col-filter-input" data-col="diffqty" placeholder="Filter Diff..." autocomplete="off"></th>
                     <th class="btn-action" style="text-align: center;">
                         <button class="btn-delete" onclick="clearAllColumnFilters()" title="Clear all filters" style="color: #c9a825;">
                             <i class="fa-solid fa-filter-circle-xmark"></i>
@@ -859,7 +863,7 @@ if ($sheet_id === 0) {
             </thead>
             <tbody id="tableBody">
                 <tr id="emptyRow">
-                    <td colspan="8">
+                    <td colspan="9">
                         <div class="empty-placeholder">
                             <i class="fa-solid fa-barcode"></i>
                             <h3>Ready for Barcode Scanning</h3>
@@ -1021,6 +1025,29 @@ if ($sheet_id === 0) {
                 });
         }
 
+        // Difference badge renderer
+        function renderDiffBadge(diff) {
+            const num = parseFloat(diff.toFixed(2));
+            if (num === 0) {
+                return `<span style="color: #059669; font-weight: 600;">0</span>`;
+            } else if (num > 0) {
+                return `<span style="color: #d97706; font-weight: 600;">+${num}</span>`;
+            } else {
+                return `<span style="color: #dc2626; font-weight: 600;">${num}</span>`;
+            }
+        }
+
+        // Update row difference cell
+        function updateRowDiff(row) {
+            const availQty = parseFloat(row.getAttribute('data-qty') || '0');
+            const scannedQty = parseInt(row.getAttribute('data-scanned') || '0');
+            const diff = parseFloat((availQty - scannedQty).toFixed(2));
+            const diffCell = row.querySelector('.col-diff');
+            if (diffCell) {
+                diffCell.innerHTML = renderDiffBadge(diff);
+            }
+        }
+
         // Dynamically append new item row to sheet
         function addItemRowToSheet(item, initialScanned = 1) {
             const emptyRow = document.getElementById('emptyRow');
@@ -1033,7 +1060,8 @@ if ($sheet_id === 0) {
             const itemNumber = item.item_number || '';
             const category = item.category || '';
             const price = parseFloat(item.unit_price || 0).toFixed(2);
-            const availQty = parseFloat(item.quantity || 0);
+            const availQty = parseFloat(item.quantity !== undefined ? item.quantity : (item.available_qty || 0));
+            const diffQty = parseFloat((availQty - initialScanned).toFixed(2));
 
             const cleanSku = sku.toLowerCase();
             const cleanItemNum = itemNumber.toLowerCase();
@@ -1065,6 +1093,7 @@ if ($sheet_id === 0) {
                            onchange="updateRowScanned(${rowId}, this.value)"
                            onfocus="this.select()">
                 </td>
+                <td class="mono col-diff" style="text-align: right; font-weight: 600;">${renderDiffBadge(diffQty)}</td>
                 <td class="btn-action" style="text-align: center;">
                     <button class="btn-delete" onclick="deleteRow(${rowId})" title="Delete row">
                         <i class="fa-solid fa-trash-can"></i>
@@ -1094,6 +1123,7 @@ if ($sheet_id === 0) {
             const input = row.querySelector('.scanned-input');
             if (input) input.value = currentScanned;
 
+            updateRowDiff(row);
             calculateTotals();
             triggerAutoSave();
         }
@@ -1107,6 +1137,7 @@ if ($sheet_id === 0) {
             if (scannedVal < 0) scannedVal = 0;
 
             row.setAttribute('data-scanned', scannedVal);
+            updateRowDiff(row);
             calculateTotals();
             triggerAutoSave();
         }
@@ -1162,9 +1193,22 @@ if ($sheet_id === 0) {
                 totalScannedQty += scanQty;
             });
 
+            const totalDiff = parseFloat((totalSystemQty - totalScannedQty).toFixed(2));
+
             document.getElementById('stat_total_items').innerText = rows.length;
             document.getElementById('stat_system_qty').innerText = totalSystemQty;
             document.getElementById('stat_scanned_qty').innerText = totalScannedQty;
+            const diffEl = document.getElementById('stat_diff_qty');
+            if (diffEl) {
+                diffEl.innerText = (totalDiff > 0 ? '+' : '') + totalDiff;
+                if (totalDiff === 0) {
+                    diffEl.style.color = '#059669';
+                } else if (totalDiff > 0) {
+                    diffEl.style.color = '#d97706';
+                } else {
+                    diffEl.style.color = '#dc2626';
+                }
+            }
         }
 
         // Combined Search + Column Filter
@@ -1189,6 +1233,8 @@ if ($sheet_id === 0) {
                 const availQty = (row.cells[5] ? row.cells[5].innerText.trim().toLowerCase() : '');
                 const scannedInput = row.querySelector('.scanned-input');
                 const scannedQty = scannedInput ? scannedInput.value.trim().toLowerCase() : '';
+                const diffCell = row.querySelector('.col-diff');
+                const diffQty = diffCell ? diffCell.innerText.trim().toLowerCase() : '';
 
                 // Global search check
                 let matchesGlobal = true;
@@ -1204,6 +1250,7 @@ if ($sheet_id === 0) {
                 if (colFilters.price && !price.includes(colFilters.price)) matchesColumns = false;
                 if (colFilters.availqty && !availQty.includes(colFilters.availqty)) matchesColumns = false;
                 if (colFilters.scannedqty && !scannedQty.includes(colFilters.scannedqty)) matchesColumns = false;
+                if (colFilters.diffqty && !diffQty.includes(colFilters.diffqty)) matchesColumns = false;
 
                 row.style.display = (matchesGlobal && matchesColumns) ? '' : 'none';
             });
@@ -1230,7 +1277,7 @@ if ($sheet_id === 0) {
             }
             document.getElementById('tableBody').innerHTML = `
                 <tr id="emptyRow">
-                    <td colspan="8">
+                    <td colspan="9">
                         <div class="empty-placeholder">
                             <i class="fa-solid fa-barcode"></i>
                             <h3>Ready for Barcode Scanning</h3>
@@ -1257,7 +1304,7 @@ if ($sheet_id === 0) {
             }
 
             const data = [
-                ['#', 'SKU / Item Code', 'Barcode #', 'Category', 'Price (₹)', 'Available Qty', 'Scanned Qty']
+                ['#', 'SKU / Item Code', 'Barcode #', 'Category', 'Price (₹)', 'Available Qty', 'Scanned Qty', 'Available - Scanned']
             ];
 
             rows.forEach((row, idx) => {
@@ -1271,8 +1318,9 @@ if ($sheet_id === 0) {
 
                 const input = row.querySelector('.scanned-input');
                 const scannedQty = input ? parseInt(input.value || 0) : 0;
+                const diffQty = parseFloat((availQty - scannedQty).toFixed(2));
 
-                data.push([rowNo, sku, itemNumber, category, price, availQty, scannedQty]);
+                data.push([rowNo, sku, itemNumber, category, price, availQty, scannedQty, diffQty]);
             });
 
             const ws = XLSX.utils.aoa_to_sheet(data);
@@ -1292,7 +1340,7 @@ if ($sheet_id === 0) {
             }
 
             let csvLines = [
-                '"#","SKU / Item Code","Barcode #","Category","Price (₹)","Available Qty","Scanned Qty"'
+                '"#","SKU / Item Code","Barcode #","Category","Price (₹)","Available Qty","Scanned Qty","Available - Scanned"'
             ];
 
             rows.forEach((row, idx) => {
@@ -1302,12 +1350,13 @@ if ($sheet_id === 0) {
                 const itemNumber = row.cells[2].innerText.trim().replace(/"/g, '""');
                 const category = row.cells[3].innerText.trim().replace(/"/g, '""');
                 const price = row.cells[4].innerText.trim();
-                const availQty = row.cells[5].innerText.trim();
+                const availQty = parseFloat(row.cells[5].innerText.trim() || 0);
 
                 const input = row.querySelector('.scanned-input');
-                const scannedQty = input ? input.value : '0';
+                const scannedQty = input ? parseInt(input.value || 0) : 0;
+                const diffQty = parseFloat((availQty - scannedQty).toFixed(2));
 
-                csvLines.push(`"${rowNo}","${sku}","${itemNumber}","${category}","${price}","${availQty}","${scannedQty}"`);
+                csvLines.push(`"${rowNo}","${sku}","${itemNumber}","${category}","${price}","${availQty}","${scannedQty}","${diffQty}"`);
             });
 
             const blob = new Blob([csvLines.join('\n')], { type: 'text/csv;charset=utf-8;' });
