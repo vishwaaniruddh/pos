@@ -1,14 +1,16 @@
 <?php
+include_once(__DIR__ . '/../db_connection.php');
+$con = OpenSrishringarrCon();
 
-include('config.php');
-$cid=$_POST['id'];
-$amt=$_POST['amt'];
+$cid = isset($_POST['id']) ? mysqli_real_escape_string($con, trim($_POST['id'])) : '';
+$amt = isset($_POST['amt']) ? floatval($_POST['amt']) : 0;
 
- $result1 = mysql_query("update `scheme` set status='S',paid_amount=paid_amount+$amt where bill_id='$cid'");
-	
-	
-	
-	
-header('location:../../../application/views/reports/rent_return1.php');
+if ($cid !== '') {
+    $sql = "UPDATE `scheme` SET status = 'S', paid_amount = paid_amount + $amt WHERE bill_id = '$cid'";
+    mysqli_query($con, $sql);
+}
 
+CloseCon($con);
+header('Location: rent_return1.php');
+exit;
 ?>

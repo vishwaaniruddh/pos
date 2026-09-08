@@ -34,7 +34,7 @@ if (file_exists('../top-navbar.php')) include_once('../top-navbar.php');
 
     <!-- partial -->
     <div class="main-panel">
-        <div class="content-wrapper" style="padding: 1.25rem 1.5rem !important; background: #f4f6fa;">
+        <div class="content-wrapper" style="padding: 1.5rem 1.75rem !important; background: #f8fafc; min-height: calc(100vh - 58px);">
 
             <script src="https://code.jquery.com/jquery-3.7.1.min.js"
                 integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
@@ -42,111 +42,137 @@ if (file_exists('../top-navbar.php')) include_once('../top-navbar.php');
 
             <style>
                 :root {
-                    --pm-primary: #4f46e5;
-                    --pm-primary-dark: #4338ca;
-                    --pm-success: #10b981;
-                    --pm-danger: #ef4444;
-                    --pm-border: #e2e8f0;
-                    --pm-bg-subtle: #f8fafc;
+                    --pm-slate-900: #0f172a;
+                    --pm-slate-800: #1e293b;
+                    --pm-slate-700: #334155;
+                    --pm-slate-600: #475569;
+                    --pm-slate-500: #64748b;
+                    --pm-slate-400: #94a3b8;
+                    --pm-slate-200: #e2e8f0;
+                    --pm-slate-100: #f1f5f9;
+                    --pm-slate-50: #f8fafc;
                 }
 
-                /* Compact Wrapper & Card */
                 .pm-container {
                     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
                 }
 
+                /* Page Header */
+                .pm-page-header {
+                    display: flex;
+                    align-items: center;
+                    justify-content: space-between;
+                    margin-bottom: 20px;
+                    flex-wrap: wrap;
+                    gap: 12px;
+                }
+
+                .pm-page-title {
+                    font-size: 20px;
+                    font-weight: 700;
+                    color: var(--pm-slate-900);
+                    margin: 0;
+                    letter-spacing: -0.02em;
+                    display: flex;
+                    align-items: center;
+                    gap: 10px;
+                }
+
+                .pm-page-subtitle {
+                    font-size: 13px;
+                    color: var(--pm-slate-500);
+                    margin: 2px 0 0 0;
+                }
+
+                .pm-badge-counter {
+                    background: var(--pm-slate-100);
+                    border: 1px solid var(--pm-slate-200);
+                    color: var(--pm-slate-800);
+                    font-size: 12.5px;
+                    font-weight: 600;
+                    padding: 6px 14px;
+                    border-radius: 9999px;
+                    display: inline-flex;
+                    align-items: center;
+                    gap: 6px;
+                }
+
+                /* Shadcn Card */
                 .pm-card {
                     background: #ffffff;
-                    border: 1px solid var(--pm-border);
-                    border-radius: 12px;
-                    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+                    border: 1px solid var(--pm-slate-200);
+                    border-radius: 8px;
+                    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
                     margin-bottom: 16px;
                     overflow: hidden;
                 }
 
-                .pm-card-header {
-                    background: linear-gradient(135deg, #1e1b4b 0%, #312e81 100%);
-                    color: #ffffff;
-                    padding: 12px 20px;
-                    display: flex;
-                    align-items: center;
-                    justify-content: space-between;
+                .pm-card-body {
+                    padding: 16px;
                 }
 
-                .pm-card-header h1, .pm-card-header h2, .pm-card-header h3 {
-                    font-size: 15px;
-                    font-weight: 700;
-                    margin: 0;
-                    display: flex;
-                    align-items: center;
-                    gap: 8px;
-                    color: #ffffff;
-                }
-
-                .pm-badge-count {
-                    background: rgba(255, 255, 255, 0.2);
-                    color: #ffffff;
-                    font-size: 12px;
-                    font-weight: 600;
-                    padding: 4px 12px;
-                    border-radius: 20px;
-                    border: 1px solid rgba(255, 255, 255, 0.25);
-                }
-
-                /* Compact Selected Tray */
+                /* Selected Tray */
                 .pm-tray-box {
-                    background: var(--pm-bg-subtle);
-                    border: 1px solid var(--pm-border);
-                    border-radius: 10px;
-                    padding: 12px 16px;
-                    margin-bottom: 14px;
+                    background: var(--pm-slate-50);
+                    border: 1px solid var(--pm-slate-200);
+                    border-radius: 8px;
+                    padding: 14px 16px;
+                    margin-bottom: 16px;
                 }
 
                 .pm-sku-textarea {
-                    border: 1px solid #cbd5e1;
+                    border: 1px solid var(--pm-slate-200);
                     border-radius: 6px;
-                    font-family: 'Consolas', 'Courier New', monospace;
-                    font-size: 12px;
+                    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+                    font-size: 12.5px;
+                    color: var(--pm-slate-900);
                     background: #ffffff;
-                    padding: 6px 10px;
+                    padding: 8px 12px;
                     resize: vertical;
-                    min-height: 48px;
+                    min-height: 52px;
+                    transition: border-color 0.15s ease, box-shadow 0.15s ease;
                 }
 
                 .pm-sku-textarea:focus {
-                    border-color: var(--pm-primary);
-                    box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.15);
+                    border-color: var(--pm-slate-900);
+                    box-shadow: 0 0 0 1px var(--pm-slate-900);
                     outline: none;
                 }
 
                 .pm-chip {
                     display: inline-flex;
                     align-items: center;
-                    background: #eef2ff;
-                    color: #3730a3;
-                    border: 1px solid #c7d2fe;
-                    font-size: 11px;
+                    background: var(--pm-slate-100);
+                    color: var(--pm-slate-800);
+                    border: 1px solid var(--pm-slate-200);
+                    font-size: 11.5px;
                     font-weight: 600;
-                    padding: 2px 8px;
-                    border-radius: 12px;
-                    margin: 2px 3px 2px 0;
+                    padding: 3px 8px;
+                    border-radius: 6px;
+                    margin: 3px 4px 3px 0;
                 }
 
                 .pm-chip .remove-chip {
-                    margin-left: 4px;
-                    color: #ef4444;
+                    margin-left: 6px;
+                    color: var(--pm-slate-400);
                     cursor: pointer;
                     font-size: 11px;
+                    transition: color 0.15s;
                 }
 
-                /* Compact Tabs */
+                .pm-chip .remove-chip:hover {
+                    color: #ef4444;
+                }
+
+                /* Shadcn Segmented Tab Switcher */
                 .pm-tab-bar {
                     display: flex;
-                    gap: 6px;
-                    background: #f1f5f9;
+                    background: var(--pm-slate-100);
+                    border: 1px solid var(--pm-slate-200);
                     padding: 4px;
                     border-radius: 8px;
-                    margin-bottom: 12px;
+                    margin-bottom: 14px;
+                    gap: 4px;
                 }
 
                 .pm-tab-btn {
@@ -154,85 +180,145 @@ if (file_exists('../top-navbar.php')) include_once('../top-navbar.php');
                     padding: 8px 14px;
                     border: none;
                     border-radius: 6px;
-                    font-weight: 600;
+                    font-weight: 500;
                     font-size: 13px;
-                    color: #64748b;
+                    color: var(--pm-slate-500);
                     background: transparent;
                     cursor: pointer;
                     display: flex;
                     align-items: center;
                     justify-content: center;
-                    gap: 6px;
-                    transition: all 0.15s;
+                    gap: 8px;
+                    transition: all 0.15s ease;
                 }
 
                 .pm-tab-btn.active {
                     background: #ffffff;
-                    color: var(--pm-primary);
-                    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+                    color: var(--pm-slate-900);
+                    font-weight: 600;
+                    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
                 }
 
-                /* Compact Filter Bar */
-                .pm-filter-bar {
-                    background: #ffffff;
-                    border: 1px solid var(--pm-border);
-                    border-radius: 10px;
-                    padding: 10px 14px;
-                    margin-bottom: 12px;
-                }
-
+                /* Inputs & Controls */
                 .pm-form-label {
                     font-size: 12px;
-                    font-weight: 700;
-                    color: #334155;
-                    margin-bottom: 4px;
+                    font-weight: 600;
+                    color: var(--pm-slate-700);
+                    margin-bottom: 5px;
                     display: block;
                 }
 
-                .pm-input-sm {
-                    height: 32px;
-                    padding: 4px 10px;
-                    font-size: 12.5px;
+                .pm-select {
+                    height: 38px;
+                    font-size: 13px;
+                    color: var(--pm-slate-800);
                     border-radius: 6px;
-                    border: 1px solid #cbd5e1;
+                    border: 1px solid var(--pm-slate-200);
+                    background: #ffffff;
+                    padding: 6px 12px;
+                    transition: border-color 0.15s ease, box-shadow 0.15s ease;
                 }
 
-                .pm-input-sm:focus {
-                    border-color: var(--pm-primary);
-                    box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.15);
+                .pm-select:focus {
+                    border-color: var(--pm-slate-900);
+                    box-shadow: 0 0 0 1px var(--pm-slate-900);
                     outline: none;
                 }
 
-                .pm-btn-sm {
-                    height: 32px;
-                    padding: 0 12px;
-                    font-size: 12px;
-                    font-weight: 600;
-                    border-radius: 6px;
-                    display: inline-flex;
-                    align-items: center;
-                    gap: 5px;
-                    white-space: nowrap;
+                .pm-filter-toolbar {
+                    background: #ffffff;
+                    border: 1px solid var(--pm-slate-200);
+                    border-radius: 8px;
+                    padding: 12px 14px;
+                    margin-bottom: 14px;
                 }
 
-                /* Realtime Counter Bar */
+                .pm-input-sm {
+                    height: 34px;
+                    padding: 4px 10px;
+                    font-size: 12.5px;
+                    border-radius: 6px;
+                    border: 1px solid var(--pm-slate-200);
+                    color: var(--pm-slate-900);
+                }
+
+                .pm-input-sm:focus {
+                    border-color: var(--pm-slate-900);
+                    box-shadow: 0 0 0 1px var(--pm-slate-900);
+                    outline: none;
+                }
+
+                /* Buttons */
+                .pm-btn-primary {
+                    background: var(--pm-slate-900);
+                    color: #ffffff;
+                    border: 1px solid var(--pm-slate-900);
+                    font-size: 12.5px;
+                    font-weight: 600;
+                    border-radius: 6px;
+                    padding: 6px 14px;
+                    height: 34px;
+                    display: inline-flex;
+                    align-items: center;
+                    gap: 6px;
+                    cursor: pointer;
+                    transition: all 0.15s ease;
+                    text-decoration: none;
+                }
+
+                .pm-btn-primary:hover {
+                    background: var(--pm-slate-800);
+                    border-color: var(--pm-slate-800);
+                    color: #ffffff;
+                }
+
+                .pm-btn-outline {
+                    background: #ffffff;
+                    color: var(--pm-slate-700);
+                    border: 1px solid var(--pm-slate-200);
+                    font-size: 12.5px;
+                    font-weight: 500;
+                    border-radius: 6px;
+                    padding: 6px 12px;
+                    height: 34px;
+                    display: inline-flex;
+                    align-items: center;
+                    gap: 6px;
+                    cursor: pointer;
+                    transition: all 0.15s ease;
+                    text-decoration: none;
+                }
+
+                .pm-btn-outline:hover {
+                    background: var(--pm-slate-100);
+                    color: var(--pm-slate-900);
+                    border-color: #cbd5e1;
+                }
+
+                .pm-btn-outline.is-active {
+                    background: var(--pm-slate-900);
+                    color: #ffffff;
+                    border-color: var(--pm-slate-900);
+                }
+
+                /* Stats / Counter Bar */
                 .pm-stats-bar {
-                    background: #f8fafc;
-                    border: 1px solid #e2e8f0;
+                    background: var(--pm-slate-50);
+                    border: 1px solid var(--pm-slate-200);
                     border-radius: 8px;
-                    padding: 8px 14px;
-                    margin-bottom: 14px;
+                    padding: 10px 14px;
+                    margin-bottom: 16px;
                     display: flex;
                     align-items: center;
                     justify-content: space-between;
                     flex-wrap: wrap;
-                    gap: 8px;
+                    gap: 10px;
                 }
 
                 .pm-stat-pill {
                     font-size: 12.5px;
-                    font-weight: 600;
-                    color: #1e293b;
+                    font-weight: 500;
+                    color: var(--pm-slate-600);
                     display: inline-flex;
                     align-items: center;
                     gap: 6px;
@@ -240,33 +326,21 @@ if (file_exists('../top-navbar.php')) include_once('../top-navbar.php');
 
                 .pm-stat-tag {
                     padding: 2px 8px;
-                    border-radius: 12px;
+                    border-radius: 6px;
                     font-size: 11.5px;
-                    font-weight: 700;
+                    font-weight: 600;
+                    background: #ffffff;
+                    border: 1px solid var(--pm-slate-200);
+                    color: var(--pm-slate-900);
                 }
 
-                .pm-stat-tag.total {
-                    background: #64748b;
-                    color: #ffffff;
-                }
-
-                .pm-stat-tag.visible {
-                    background: #2563eb;
-                    color: #ffffff;
-                }
-
-                .pm-stat-tag.tray {
-                    background: #10b981;
-                    color: #ffffff;
-                }
-
-                /* Compact Product Card */
+                /* Product Grid Cards */
                 .compact-product-card {
                     background: #ffffff;
-                    border: 1.5px solid #e2e8f0;
+                    border: 1px solid var(--pm-slate-200);
                     border-radius: 8px;
                     overflow: hidden;
-                    transition: transform 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+                    transition: border-color 0.15s ease, box-shadow 0.15s ease, transform 0.15s ease;
                     display: flex;
                     flex-direction: column;
                     height: 100%;
@@ -274,21 +348,21 @@ if (file_exists('../top-navbar.php')) include_once('../top-navbar.php');
 
                 .compact-product-card:hover {
                     border-color: #94a3b8;
+                    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
                     transform: translateY(-2px);
-                    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
                 }
 
                 .compact-product-card.is-selected {
-                    border-color: #10b981 !important;
-                    box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.3) !important;
-                    background: #f0fdf4 !important;
+                    border: 2px solid var(--pm-slate-900) !important;
+                    background: var(--pm-slate-50);
+                    box-shadow: 0 0 0 1px var(--pm-slate-900);
                 }
 
                 .card-thumb-box {
                     position: relative;
                     width: 100%;
                     height: 180px;
-                    background: #f1f5f9;
+                    background: var(--pm-slate-100);
                     overflow: hidden;
                 }
 
@@ -308,7 +382,7 @@ if (file_exists('../top-navbar.php')) include_once('../top-navbar.php');
                     top: 6px;
                     left: 6px;
                     font-size: 10px;
-                    font-weight: 700;
+                    font-weight: 600;
                     padding: 2px 6px;
                     border-radius: 4px;
                     backdrop-filter: blur(4px);
@@ -316,17 +390,17 @@ if (file_exists('../top-navbar.php')) include_once('../top-navbar.php');
                 }
 
                 .card-qty-badge.in-stock {
-                    background: rgba(16, 185, 129, 0.9);
+                    background: rgba(15, 23, 42, 0.85);
                     color: #ffffff;
                 }
 
                 .card-qty-badge.out-stock {
-                    background: rgba(239, 68, 68, 0.9);
+                    background: rgba(239, 68, 68, 0.85);
                     color: #ffffff;
                 }
 
                 .card-info-box {
-                    padding: 8px 10px 10px 10px;
+                    padding: 10px;
                     display: flex;
                     flex-direction: column;
                     flex: 1;
@@ -335,37 +409,37 @@ if (file_exists('../top-navbar.php')) include_once('../top-navbar.php');
                 .card-sku {
                     font-size: 12px;
                     font-weight: 700;
-                    color: #0f172a;
-                    font-family: 'Consolas', 'Courier New', monospace;
+                    color: var(--pm-slate-900);
+                    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
                 }
 
                 .card-mrp {
                     font-size: 10.5px;
-                    color: #64748b;
-                    background: #f1f5f9;
-                    padding: 1px 5px;
-                    border-radius: 3px;
+                    color: var(--pm-slate-500);
+                    background: var(--pm-slate-100);
+                    padding: 1px 6px;
+                    border-radius: 4px;
                     font-weight: 600;
                 }
 
                 .card-title-text {
-                    font-size: 11px;
-                    color: #475569;
+                    font-size: 11.5px;
+                    color: var(--pm-slate-600);
                     white-space: nowrap;
                     overflow: hidden;
                     text-overflow: ellipsis;
-                    margin-bottom: 6px;
+                    margin-bottom: 8px;
                 }
 
                 .card-prices-grid {
                     display: grid;
                     grid-template-columns: 1fr 1fr;
-                    gap: 4px;
-                    background: #f8fafc;
-                    padding: 5px 6px;
+                    gap: 6px;
+                    background: var(--pm-slate-50);
+                    padding: 6px 8px;
                     border-radius: 6px;
-                    border: 1px solid #f1f5f9;
-                    margin-bottom: 8px;
+                    border: 1px solid var(--pm-slate-200);
+                    margin-bottom: 10px;
                 }
 
                 .card-price-col {
@@ -377,79 +451,90 @@ if (file_exists('../top-navbar.php')) include_once('../top-navbar.php');
                     font-size: 9.5px;
                     text-transform: uppercase;
                     font-weight: 700;
-                    color: #94a3b8;
+                    color: var(--pm-slate-400);
                     line-height: 1;
                 }
 
-                .card-price-col.rent .col-val {
-                    font-size: 12px;
+                .card-price-col .col-val {
+                    font-size: 12.5px;
                     font-weight: 700;
-                    color: #2563eb;
+                    color: var(--pm-slate-900);
                     line-height: 1.3;
-                }
-
-                .card-price-col.sell .col-val {
-                    font-size: 12px;
-                    font-weight: 700;
-                    color: #dc2626;
-                    line-height: 1.3;
+                    margin-top: 2px;
                 }
 
                 .btn-card-action {
-                    height: 28px;
+                    height: 30px;
                     padding: 0;
                     font-size: 11.5px;
                     font-weight: 600;
                     border-radius: 6px;
-                    border: 1px solid var(--pm-primary);
+                    border: 1px solid var(--pm-slate-900);
                     background: #ffffff;
-                    color: var(--pm-primary);
-                    transition: all 0.15s;
+                    color: var(--pm-slate-900);
+                    transition: all 0.15s ease;
                     width: 100%;
+                    cursor: pointer;
+                    display: inline-flex;
+                    align-items: center;
+                    justify-content: center;
+                    gap: 5px;
                 }
 
                 .btn-card-action:hover {
-                    background: var(--pm-primary);
-                    color: #ffffff;
+                    background: var(--pm-slate-100);
                 }
 
                 .is-selected .btn-card-action {
-                    background: #10b981 !important;
-                    border-color: #10b981 !important;
+                    background: var(--pm-slate-900) !important;
+                    border-color: var(--pm-slate-900) !important;
                     color: #ffffff !important;
+                }
+
+                /* Empty state container */
+                .pm-empty-state {
+                    text-align: center;
+                    padding: 48px 20px;
+                    background: #ffffff;
+                    border: 1px dashed var(--pm-slate-200);
+                    border-radius: 8px;
                 }
             </style>
 
             <div class="pm-container">
 
+                <!-- Page Header -->
+                <div class="pm-page-header">
+                    <div>
+                        <h1 class="pm-page-title">
+                            <i class="fa fa-file-pdf-o text-muted" style="font-size: 18px;"></i> 
+                            PDF Catalog Generator
+                        </h1>
+                        <p class="pm-page-subtitle">Select inventory, apply price filters, and prepare SKUs for catalog generation.</p>
+                    </div>
+                    <div class="pm-badge-counter" id="selectedCountBadge">
+                        <i class="fa fa-check-circle text-muted"></i> 0 Products Selected
+                    </div>
+                </div>
+
                 <!-- Main Card -->
                 <div class="pm-card">
-                    <div class="pm-card-header">
-                        <h2>
-                            <i class="fa fa-file-pdf-o"></i> 
-                            PDF Catalog Generator
-                        </h2>
-                        <span class="pm-badge-count" id="selectedCountBadge">
-                            <i class="fa fa-check-circle"></i> 0 Selected
-                        </span>
-                    </div>
-
-                    <div class="p-3">
+                    <div class="pm-card-body">
 
                         <!-- Selected Tray -->
                         <div class="pm-tray-box">
                             <form action="review_pdfmaker.php" method="POST" id="pdfForm">
-                                <div class="d-flex justify-content-between align-items-center mb-1 flex-wrap gap-2">
+                                <div class="d-flex justify-content-between align-items-center mb-2 flex-wrap gap-2">
                                     <label class="pm-form-label m-0">
-                                        <i class="fa fa-shopping-bag text-primary"></i> 
+                                        <i class="fa fa-shopping-bag text-muted me-1"></i> 
                                         Selected Products Tray (SKUs)
                                     </label>
                                     <div class="d-flex gap-2">
-                                        <button type="button" class="btn btn-outline-secondary pm-btn-sm" style="height:26px; font-size:11px;" onclick="cleanSkus()">
+                                        <button type="button" class="pm-btn-outline" style="height:28px; font-size:11.5px;" onclick="cleanSkus()" title="Remove duplicates & clean commas">
                                             <i class="fa fa-magic"></i> Clean & Deduplicate
                                         </button>
-                                        <button type="button" class="btn btn-outline-danger pm-btn-sm" style="height:26px; font-size:11px;" onclick="clearSkus()">
-                                            <i class="fa fa-trash"></i> Clear All
+                                        <button type="button" class="pm-btn-outline" style="height:28px; font-size:11.5px;" onclick="clearSkus()" title="Clear tray">
+                                            <i class="fa fa-trash text-muted"></i> Clear All
                                         </button>
                                     </div>
                                 </div>
@@ -459,29 +544,29 @@ if (file_exists('../top-navbar.php')) include_once('../top-navbar.php');
                                 
                                 <div id="skuChips" class="mt-1"></div>
 
-                                <div class="d-flex justify-content-end mt-2">
-                                    <button type="submit" class="btn btn-success pm-btn-sm" style="height: 34px; padding: 0 16px; font-weight: 700;">
-                                        Proceed to Image Selection & Review <i class="fa fa-arrow-right ml-1"></i>
+                                <div class="d-flex justify-content-end mt-2 pt-1">
+                                    <button type="submit" class="pm-btn-primary" style="height: 36px; padding: 0 18px;">
+                                        Proceed to Image Selection & Review <i class="fa fa-arrow-right ms-1"></i>
                                     </button>
                                 </div>
                             </form>
                         </div>
 
-                        <!-- Category Selector Tabs -->
+                        <!-- Category Selector Segmented Tabs -->
                         <div class="pm-tab-bar">
                             <button class="pm-tab-btn active" id="apparelTab" onclick="switchCategoryTab('apparel')">
                                 <i class="fa fa-female"></i> Apparel Categories
                             </button>
                             <button class="pm-tab-btn" id="jewelTab" onclick="switchCategoryTab('jewellery')">
-                                <i class="fa fa-gem"></i> Jewellery Categories
+                                <i class="fa fa-diamond"></i> Jewellery Categories
                             </button>
                         </div>
 
                         <!-- Category Select Dropdowns -->
-                        <div class="row g-2 mb-2">
+                        <div class="row g-2 mb-3">
                             <div class="col-md-6 col-sm-12" id="apparelDropdownSection">
-                                <label class="pm-form-label"><i class="fa fa-tag text-primary"></i> Select Apparel Category</label>
-                                <select id="garmentid" name="garmentid" class="form-select form-control pm-input-sm">
+                                <label class="pm-form-label"><i class="fa fa-tag text-muted me-1"></i> Select Apparel Category</label>
+                                <select id="garmentid" name="garmentid" class="form-select form-control pm-select w-100">
                                     <option value="">-- Choose Apparel Category --</option>
                                     <?php
                                     if ($web_con) {
@@ -499,8 +584,8 @@ if (file_exists('../top-navbar.php')) include_once('../top-navbar.php');
                             </div>
 
                             <div class="col-md-6 col-sm-12" id="jewelleryDropdownSection" style="display:none;">
-                                <label class="pm-form-label"><i class="fa fa-tag text-primary"></i> Select Jewellery Category</label>
-                                <select id="jewelid" name="jewelid" class="form-select form-control pm-input-sm">
+                                <label class="pm-form-label"><i class="fa fa-tag text-muted me-1"></i> Select Jewellery Category</label>
+                                <select id="jewelid" name="jewelid" class="form-select form-control pm-select w-100">
                                     <option value="">-- Choose Jewellery Category --</option>
                                     <?php
                                     $apiAutoload = dirname(dirname(__DIR__)) . '/API/autoload.php';
@@ -557,38 +642,38 @@ if (file_exists('../top-navbar.php')) include_once('../top-navbar.php');
                         </div>
 
                         <!-- Filter Controls Bar -->
-                        <div class="pm-filter-bar">
+                        <div class="pm-filter-toolbar">
                             <div class="row g-2 align-items-center">
                                 <!-- Price Bounds -->
                                 <div class="col-xl-4 col-lg-5 col-md-6 col-sm-12">
                                     <div class="input-group">
-                                        <span class="input-group-text py-0 px-2" style="font-size:12px; background:#f8fafc;">₹</span>
+                                        <span class="input-group-text py-0 px-2" style="font-size:12px; background:var(--pm-slate-50); border-color:var(--pm-slate-200); color:var(--pm-slate-600);">₹</span>
                                         <input type="number" id="minPrice" name="minPrice" class="form-control pm-input-sm" placeholder="Min Price">
-                                        <span class="input-group-text py-0 px-2" style="font-size:12px; background:#f8fafc;">to</span>
+                                        <span class="input-group-text py-0 px-2" style="font-size:12px; background:var(--pm-slate-50); border-color:var(--pm-slate-200); color:var(--pm-slate-500);">to</span>
                                         <input type="number" id="maxPrice" name="maxPrice" class="form-control pm-input-sm" placeholder="Max Price">
                                     </div>
                                 </div>
 
                                 <!-- Filter Buttons -->
-                                <div class="col-xl-3 col-lg-4 col-md-6 col-sm-12 d-flex gap-1">
-                                    <button type="button" id="rentFilter" class="btn btn-primary pm-btn-sm flex-fill">
+                                <div class="col-xl-4 col-lg-4 col-md-6 col-sm-12 d-flex gap-1">
+                                    <button type="button" id="rentFilter" class="pm-btn-outline flex-fill justify-content-center">
                                         <i class="fa fa-filter"></i> Rent Filter
                                     </button>
-                                    <button type="button" id="sellFilter" class="btn btn-danger pm-btn-sm flex-fill">
+                                    <button type="button" id="sellFilter" class="pm-btn-outline flex-fill justify-content-center">
                                         <i class="fa fa-filter"></i> Sell Filter
                                     </button>
-                                    <button type="button" class="btn btn-outline-secondary pm-btn-sm" onclick="resetPriceFilter()" title="Reset Filters">
+                                    <button type="button" class="pm-btn-outline px-2" onclick="resetPriceFilter()" title="Reset Filters">
                                         <i class="fa fa-refresh"></i>
                                     </button>
                                 </div>
 
                                 <!-- Instant Search Box -->
-                                <div class="col-xl-5 col-lg-3 col-md-12 col-sm-12">
+                                <div class="col-xl-4 col-lg-3 col-md-12 col-sm-12">
                                     <div class="input-group">
-                                        <span class="input-group-text py-0 px-2" style="font-size:12px; background:#f8fafc;"><i class="fa fa-search text-muted"></i></span>
+                                        <span class="input-group-text py-0 px-2" style="font-size:12px; background:var(--pm-slate-50); border-color:var(--pm-slate-200);"><i class="fa fa-search text-muted"></i></span>
                                         <input type="text" id="liveSearchInput" class="form-control pm-input-sm" placeholder="Search SKU or name...">
-                                        <button class="btn btn-outline-secondary pm-btn-sm py-0 px-2" type="button" onclick="$('#liveSearchInput').val('').trigger('input');" title="Clear">
-                                            <i class="fa fa-times"></i>
+                                        <button class="btn btn-outline-secondary pm-input-sm py-0 px-2" type="button" onclick="$('#liveSearchInput').val('').trigger('input');" title="Clear">
+                                            <i class="fa fa-times text-muted"></i>
                                         </button>
                                     </div>
                                 </div>
@@ -600,27 +685,27 @@ if (file_exists('../top-navbar.php')) include_once('../top-navbar.php');
                             <div class="d-flex align-items-center flex-wrap gap-2">
                                 <span class="pm-stat-pill">
                                     Category Total: 
-                                    <span class="pm-stat-tag total" id="statCategoryTotal">0</span>
+                                    <span class="pm-stat-tag" id="statCategoryTotal">0</span>
                                 </span>
 
                                 <span class="pm-stat-pill">
                                     After Filter: 
-                                    <span class="pm-stat-tag visible" id="statVisibleCount">0 Visible</span>
+                                    <span class="pm-stat-tag" id="statVisibleCount">0 Visible</span>
                                 </span>
 
                                 <span class="pm-stat-pill">
                                     In Tray: 
-                                    <span class="pm-stat-tag tray" id="statSelectedCount">0</span>
+                                    <span class="pm-stat-tag" id="statSelectedCount">0</span>
                                 </span>
 
                                 <span class="text-muted font-italic" id="filterStatusText" style="font-size: 12px;"></span>
                             </div>
 
-                            <div class="d-flex gap-1">
-                                <button type="button" class="btn btn-outline-primary pm-btn-sm" style="height:28px; font-size:11.5px;" onclick="selectAllFiltered()">
+                            <div class="d-flex gap-2">
+                                <button type="button" class="pm-btn-outline" style="height:28px; font-size:11.5px;" onclick="selectAllFiltered()">
                                     <i class="fa fa-check-square-o"></i> Select All Filtered
                                 </button>
-                                <button type="button" class="btn btn-outline-secondary pm-btn-sm" style="height:28px; font-size:11.5px;" onclick="deselectAllFiltered()">
+                                <button type="button" class="pm-btn-outline" style="height:28px; font-size:11.5px;" onclick="deselectAllFiltered()">
                                     <i class="fa fa-square-o"></i> Deselect Filtered
                                 </button>
                             </div>
@@ -628,10 +713,10 @@ if (file_exists('../top-navbar.php')) include_once('../top-navbar.php');
 
                         <!-- Products Grid Container -->
                         <div id="categoryProductsContainer">
-                            <div class="text-center py-5 text-muted">
-                                <i class="fa fa-th-large fa-2x mb-2 text-secondary" style="opacity: 0.35;"></i>
-                                <div style="font-size:13.5px; font-weight:600;">Select a category above to load products</div>
-                                <div style="font-size:11.5px; color:#94a3b8;">Products match the live storefront catalog with real-time stock and prices.</div>
+                            <div class="pm-empty-state">
+                                <i class="fa fa-th-large fa-2x mb-2 text-muted" style="opacity: 0.4;"></i>
+                                <div style="font-size:14px; font-weight:600; color:var(--pm-slate-800);">Select a category above to load inventory</div>
+                                <div style="font-size:12px; color:var(--pm-slate-500); margin-top: 4px;">Live inventory, high-resolution product imagery, and stock counts will populate here.</div>
                             </div>
                         </div>
 
@@ -713,7 +798,7 @@ if (file_exists('../top-navbar.php')) include_once('../top-navbar.php');
 
                 function updateChipsUI() {
                     var arr = Array.from(uniqueSkus);
-                    $("#selectedCountBadge").html('<i class="fa fa-check-circle"></i> ' + arr.length + ' Selected');
+                    $("#selectedCountBadge").html('<i class="fa fa-check-circle text-muted"></i> ' + arr.length + ' Products Selected');
                     $("#statSelectedCount").text(arr.length);
 
                     var chipsHtml = '';
@@ -738,7 +823,8 @@ if (file_exists('../top-navbar.php')) include_once('../top-navbar.php');
                         text: "Remove all " + uniqueSkus.size + " products from the tray?",
                         icon: 'warning',
                         showCancelButton: true,
-                        confirmButtonColor: '#ef4444',
+                        confirmButtonColor: '#0f172a',
+                        cancelButtonColor: '#64748b',
                         confirmButtonText: 'Yes, Clear All'
                     }).then((result) => {
                         if (result.isConfirmed) {
@@ -777,7 +863,13 @@ if (file_exists('../top-navbar.php')) include_once('../top-navbar.php');
                         $('#garmentid').val('');
                     }
                     $('#statsBarContainer').hide();
-                    $('#categoryProductsContainer').html('<div class="text-center py-5 text-muted"><i class="fa fa-th-large fa-2x mb-2 text-secondary" style="opacity: 0.35;"></i><div style="font-size:13px;">Select a category above to view products</div></div>');
+                    $('#categoryProductsContainer').html(
+                        '<div class="pm-empty-state">' +
+                        '  <i class="fa fa-th-large fa-2x mb-2 text-muted" style="opacity: 0.4;"></i>' +
+                        '  <div style="font-size:14px; font-weight:600; color:var(--pm-slate-800);">Select a category above to load inventory</div>' +
+                        '  <div style="font-size:12px; color:var(--pm-slate-500); margin-top: 4px;">Live inventory, high-resolution product imagery, and stock counts will populate here.</div>' +
+                        '</div>'
+                    );
                 }
 
                 // AJAX Loaders
@@ -785,7 +877,12 @@ if (file_exists('../top-navbar.php')) include_once('../top-navbar.php');
                     var garmentid = $(this).val();
                     if (!garmentid) {
                         $('#statsBarContainer').hide();
-                        $("#categoryProductsContainer").html('<div class="text-center py-5 text-muted"><i class="fa fa-th-large fa-2x mb-2 text-secondary" style="opacity: 0.35;"></i><div style="font-size:13px;">Select an apparel category</div></div>');
+                        $("#categoryProductsContainer").html(
+                            '<div class="pm-empty-state">' +
+                            '  <i class="fa fa-th-large fa-2x mb-2 text-muted" style="opacity: 0.4;"></i>' +
+                            '  <div style="font-size:14px; font-weight:600; color:var(--pm-slate-800);">Select an apparel category</div>' +
+                            '</div>'
+                        );
                         return;
                     }
                     loadProductsAjax('./garmentdestailsShowPDF.php', { garmentid: garmentid });
@@ -795,7 +892,12 @@ if (file_exists('../top-navbar.php')) include_once('../top-navbar.php');
                     var jewelid = $(this).val();
                     if (!jewelid) {
                         $('#statsBarContainer').hide();
-                        $("#categoryProductsContainer").html('<div class="text-center py-5 text-muted"><i class="fa fa-th-large fa-2x mb-2 text-secondary" style="opacity: 0.35;"></i><div style="font-size:13px;">Select a jewellery category</div></div>');
+                        $("#categoryProductsContainer").html(
+                            '<div class="pm-empty-state">' +
+                            '  <i class="fa fa-th-large fa-2x mb-2 text-muted" style="opacity: 0.4;"></i>' +
+                            '  <div style="font-size:14px; font-weight:600; color:var(--pm-slate-800);">Select a jewellery category</div>' +
+                            '</div>'
+                        );
                         return;
                     }
                     loadProductsAjax('./jeweldestailsShowPDF.php', { jewelid: jewelid });
@@ -804,9 +906,9 @@ if (file_exists('../top-navbar.php')) include_once('../top-navbar.php');
                 function loadProductsAjax(url, data) {
                     $("#categoryProductsContainer").html(
                         '<div class="text-center py-5">' +
-                        '  <i class="fa fa-spinner fa-spin fa-2x text-primary mb-2"></i>' +
-                        '  <div style="font-size:13px; font-weight:600;">Loading Products...</div>' +
-                        '  <div style="font-size:11.5px; color:#94a3b8;">Fetching live inventory & prices directly from ProductService...</div>' +
+                        '  <i class="fa fa-spinner fa-spin fa-2x mb-2 text-muted"></i>' +
+                        '  <div style="font-size:13px; font-weight:600; color:var(--pm-slate-800);">Loading Inventory...</div>' +
+                        '  <div style="font-size:12px; color:var(--pm-slate-500);">Fetching live inventory & prices from ProductService...</div>' +
                         '</div>'
                     );
                     $('#statsBarContainer').hide();
@@ -830,33 +932,32 @@ if (file_exists('../top-navbar.php')) include_once('../top-navbar.php');
 
                 // Filter Actions
                 $(document).on('click', '#rentFilter', function () {
-                    currentFilterType = 'rent';
+                    if (currentFilterType === 'rent') {
+                        currentFilterType = null;
+                        $(this).removeClass('is-active');
+                    } else {
+                        currentFilterType = 'rent';
+                        $('#rentFilter').addClass('is-active');
+                        $('#sellFilter').removeClass('is-active');
+                    }
                     applyAllFilters();
-                    Swal.fire({
-                        toast: true,
-                        position: 'top-end',
-                        icon: 'success',
-                        title: 'Filtered by Rent Price!',
-                        showConfirmButton: false,
-                        timer: 1200
-                    });
                 });
 
                 $(document).on('click', '#sellFilter', function () {
-                    currentFilterType = 'sell';
+                    if (currentFilterType === 'sell') {
+                        currentFilterType = null;
+                        $(this).removeClass('is-active');
+                    } else {
+                        currentFilterType = 'sell';
+                        $('#sellFilter').addClass('is-active');
+                        $('#rentFilter').removeClass('is-active');
+                    }
                     applyAllFilters();
-                    Swal.fire({
-                        toast: true,
-                        position: 'top-end',
-                        icon: 'success',
-                        title: 'Filtered by Sell Price!',
-                        showConfirmButton: false,
-                        timer: 1200
-                    });
                 });
 
                 function resetPriceFilter(triggerUpdate = true) {
                     currentFilterType = null;
+                    $('#rentFilter, #sellFilter').removeClass('is-active');
                     $("#minPrice").val('');
                     $("#maxPrice").val('');
                     $("#liveSearchInput").val('');
@@ -999,3 +1100,19 @@ if (file_exists('../top-navbar.php')) include_once('../top-navbar.php');
         </div>
     </div>
 </div>
+
+<?php if (file_exists('../footer.php')) include_once('../footer.php'); ?>
+</div>
+</div>
+</div>
+
+<script src="../vendors/js/vendor.bundle.base.js"></script>
+<script src="../vendors/js/vendor.bundle.addons.js"></script>
+<script src="../js/off-canvas.js"></script>
+<script src="../js/hoverable-collapse.js"></script>
+<script src="../js/misc.js"></script>
+<script src="../js/settings.js"></script>
+<script src="../js/todolist.js"></script>
+
+</body>
+</html>

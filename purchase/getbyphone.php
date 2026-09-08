@@ -1,20 +1,26 @@
 <?php
-ini_set( "display_errors", 0);
-// include('config.php');
-include('../db_connection.php') ;
-$con=OpenSrishringarrCon();
+if (file_exists(__DIR__ . '/../db_connection.php')) {
+    include_once(__DIR__ . '/../db_connection.php');
+} else {
+    include_once('../db_connection.php');
+}
+$con = OpenSrishringarrCon();
 
-       $id=$_GET['cid'];
+$id = isset($_GET['cid']) ? mysqli_real_escape_string($con, trim($_GET['cid'])) : '';
 
-$sumpd=0;
-$bal=0;
+$num1 = 0;
+$person_id = 0;
 
-/////count total retun
-$qry1="SELECT person_id FROM  phppos_people  where phone_number='$id' ";
-$res1=mysqli_query($con,$qry1);                
-$num1=mysqli_num_rows($res1);
-$row1=mysqli_fetch_row($res1);
+if ($id !== '') {
+    $qry1 = "SELECT person_id FROM phppos_people WHERE phone_number='$id' LIMIT 1";
+    $res1 = mysqli_query($con, $qry1);
+    if ($res1 && mysqli_num_rows($res1) > 0) {
+        $num1 = 1;
+        $row1 = mysqli_fetch_row($res1);
+        $person_id = $row1[0] ?? 0;
+    }
+}
 
-echo $num1."&&".$row1[0];
+echo $num1 . "&&" . $person_id;
 CloseCon($con);
 ?>

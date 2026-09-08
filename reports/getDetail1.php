@@ -1,145 +1,119 @@
 <?php
-// include('config.php');
-include('../db_connection.php') ;
-$con=OpenSrishringarrCon();
+if (file_exists(__DIR__ . '/../db_connection.php')) {
+    include_once(__DIR__ . '/../db_connection.php');
+} else {
+    include_once('../db_connection.php');
+}
+$con = OpenSrishringarrCon();
 
+$id = isset($_GET['barcode']) ? mysqli_real_escape_string($con, trim($_GET['barcode'])) : '';
+$userids = '0';
 
-       $id=$_GET['barcode'];
-
-
-
-$allusersql = mysqli_query($con, "SELECT * FROM phppos_people WHERE person_id = '$id'");
-if ($allusersql_result = mysqli_fetch_assoc($allusersql)) {
-    $mobilenumber = $allusersql_result['phone_number'];
-    
-    // Get all person_ids with the matching mobile number
-    $idsResult = mysqli_query($con, "SELECT GROUP_CONCAT(person_id) as person_ids FROM phppos_people WHERE phone_number = '$mobilenumber'");
-    $idsRow = mysqli_fetch_assoc($idsResult);
-    $userids = $idsRow['person_ids'];
-    
-    // get all person_id comma seprated with matching mobile
-    
+if ($id !== '') {
+    $allusersql = mysqli_query($con, "SELECT phone_number FROM phppos_people WHERE person_id = '$id'");
+    if ($allusersql && $allusersql_result = mysqli_fetch_assoc($allusersql)) {
+        $mobilenumber = mysqli_real_escape_string($con, $allusersql_result['phone_number']);
+        if ($mobilenumber !== '') {
+            $idsResult = mysqli_query($con, "SELECT GROUP_CONCAT(person_id) as person_ids FROM phppos_people WHERE phone_number = '$mobilenumber'");
+            if ($idsResult && $idsRow = mysqli_fetch_assoc($idsResult)) {
+                $userids = $idsRow['person_ids'] ?: $id;
+            }
+        } else {
+            $userids = $id;
+        }
+    } else {
+        $userids = $id;
+    }
 }
 
-
-$qry = "SELECT * FROM phppos_rent WHERE cust_id IN ($userids) AND status = 'A'";
-$res=mysqli_query($con,$qry);                
-$num=mysqli_num_rows($res);
-$dep=0;
-$pa=0;
-$rent=0;			
-				 				 
+$qry = "SELECT r.*, p.first_name, p.last_name, p.phone_number,
+               th.first_name as th_first_name,
+               (SELECT COALESCE(SUM(od.deposit), 0) FROM order_detail od WHERE od.bill_id = r.bill_id) as total_deposit
+        FROM phppos_rent r 
+        LEFT JOIN phppos_people p ON r.cust_id = p.person_id
+        LEFT JOIN phppos_people th ON r.throught = th.person_id
+        WHERE r.cust_id IN ($userids) AND r.status = 'A'
+        ORDER BY r.bill_id DESC";
+$res = mysqli_query($con, $qry);
+$num = $res ? mysqli_num_rows($res) : 0;
+$dep = 0;
+$rent = 0;
 ?>
-<table  border="1" cellpadding="4" cellspacing="0" width="850" align="left">
- <tr>
- <th width='35' height="34"><U>Sr.No.</U></th>
-    <th width='35' height="34"><U>Bill No.</U></th>
-    <th width='95'><u>Customer Name</u></th>
-    <th width='34'><u>Pick-Up</u></th>
-    <th width='58'><u>Delivery</u></th>
-     <th width='61'><u>Throught</U></th>
-     <th width='70'><u>Bill Date</U></th>
-  <th width='40'><U>Rent</U></th>
-  <th width='79'><U>Deposit</U></th>
-    <th width='99'><U>Rent Return</U></th>
-  <th width='97'><U>Delete Rent </U></th>
-  </tr>
-<?php
-$i=1;
 
-
-while($row = mysqli_fetch_array($res)){
-    
-
-    $new_bill_number = $row['new_bill_number'];
-    
-$sql1=mysqli_query($con,"SELECT * FROM `phppos_people` WHERE `person_id`='$row[1]'");
-$row1=mysqli_fetch_row($sql1);
- 
- $sql2=mysqli_query($con,"SELECT * FROM `phppos_people` WHERE `person_id`='$row[8]'");
-$row2=mysqli_fetch_row($sql2);
-
-// echo "SELECT * FROM `order_detail` WHERE `bill_id`='$row[0]'" ;
-
-
-$dep1=0;
-$sql3=mysqli_query($con,"SELECT * FROM `order_detail` WHERE `bill_id`='$row[0]'");
-while($row3=mysqli_fetch_row($sql3)){
-	$dep1+=$row3[3];
-}
-
-?>				   
-				   
-<tr>
-<td width="35"><?php echo $i; ?></td>
-<td style="white-space:nowrap;"><?php echo $new_bill_number ? $new_bill_number : $row[0]; ?></td>
-<td width="95" align="center"><?php echo $row1[0]." " .$row1[1]; ?></td>
-<td width="34"><?php echo $row[6]; ?></td>
-<td width="58"><?php echo $row[7]; ?></td>
-<td width="61"><?php echo $row2[0]; ?></td>
-<td width="70"> <?php if(isset($row[2]) and $row[2]!='0000-00-00') echo date('d/m/Y',strtotime($row[2])); ?></td>
-<td width="40"><?php echo $row[3]; $rent+=$row[3]; ?></td>
-<td width="79"><?php echo $dep1; $dep+=$dep1; ?></td>
- <td  align="left" width="99"><a href="rent_detail.php?id=<?php echo $row[0]; ?>">Rent Return</a></td>
- 
- <td  align="left" width="97"><a href="javascript: confirm_delete(<?php echo $row[0]; ?>);">Delete Rent </a></td>
-     </tr>
-				
-			<?php $i++; } ?>
+<div style="overflow-x: auto; margin-top: 14px; border: 1px solid #e2e8f0; border-radius: 8px;">
+    <table class="pm-table" style="width: 100%; border-collapse: collapse; font-size: 12px; background: #ffffff;">
+        <thead>
+            <tr style="background: #f8fafc; border-bottom: 1px solid #e2e8f0;">
+                <th style="padding: 10px 14px; text-align: center; width: 45px;">#</th>
+                <th style="padding: 10px 14px;">Bill / Invoice No</th>
+                <th style="padding: 10px 14px;">Customer Name</th>
+                <th style="padding: 10px 14px;">Pick-Up</th>
+                <th style="padding: 10px 14px;">Delivery</th>
+                <th style="padding: 10px 14px;">Referred By</th>
+                <th style="padding: 10px 14px;">Bill Date</th>
+                <th style="padding: 10px 14px; text-align: right;">Rent (₹)</th>
+                <th style="padding: 10px 14px; text-align: right;">Deposit (₹)</th>
+                <th style="padding: 10px 14px; text-align: center;">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php
+            if ($num === 0):
+            ?>
+                <tr>
+                    <td colspan="10" style="padding: 30px; text-align: center; color: #94a3b8;">
+                        <i class="fa fa-box-open" style="font-size: 24px; margin-bottom: 8px; display: block;"></i>
+                        No active unreturned rentals found for this customer.
+                    </td>
+                </tr>
+            <?php
+            else:
+                $i = 1;
+                while ($row = mysqli_fetch_assoc($res)):
+                    $new_bill_number = !empty($row['new_bill_number']) ? $row['new_bill_number'] : $row['bill_id'];
+                    $cust_name = trim(($row['first_name'] ?? '') . ' ' . ($row['last_name'] ?? ''));
+                    $th_name = trim((string)($row['th_first_name'] ?? ''));
+                    $r_amt = floatval($row['rent_amount'] ?? 0);
+                    $d_amt = floatval($row['total_deposit'] ?? 0);
+                    $rent += $r_amt;
+                    $dep += $d_amt;
+            ?>
+                <tr style="border-bottom: 1px solid #e2e8f0;">
+                    <td style="padding: 10px 14px; text-align: center; color: #64748b;"><?= $i++ ?></td>
+                    <td style="padding: 10px 14px; font-weight: 600; font-family: monospace;">
+                        <span class="pm-bill-pill"><?= htmlspecialchars($new_bill_number) ?></span>
+                    </td>
+                    <td style="padding: 10px 14px; font-weight: 600; color: #0f172a;"><?= htmlspecialchars($cust_name) ?></td>
+                    <td style="padding: 10px 14px; color: #64748b;"><?= htmlspecialchars($row['pick_date'] ?: '—') ?></td>
+                    <td style="padding: 10px 14px; color: #64748b;"><?= htmlspecialchars($row['delivery_date'] ?: '—') ?></td>
+                    <td style="padding: 10px 14px; color: #64748b;"><?= htmlspecialchars($th_name ?: '—') ?></td>
+                    <td style="padding: 10px 14px; color: #64748b;"><?= ($row['bill_date'] && $row['bill_date'] !== '0000-00-00') ? date('d/m/Y', strtotime($row['bill_date'])) : '—' ?></td>
+                    <td style="padding: 10px 14px; text-align: right; font-weight: 700; font-family: monospace; color: #0f172a;">₹ <?= number_format($r_amt) ?></td>
+                    <td style="padding: 10px 14px; text-align: right; font-family: monospace; color: #64748b;">₹ <?= number_format($d_amt) ?></td>
+                    <td style="padding: 10px 14px; text-align: center;">
+                        <div style="display: flex; gap: 4px; justify-content: center;">
+                            <a href="rent_detail.php?id=<?= urlencode($row['bill_id']) ?>" class="pm-btn pm-btn-primary pm-btn-sm" style="font-size: 11px; padding: 0 8px; height: 26px;">
+                                <i class="fa fa-arrow-rotate-left"></i> Return
+                            </a>
+                            <button type="button" class="pm-btn-danger-sm" style="height: 26px; padding: 0 6px;" onclick="confirm_delete('<?= urlencode($row['bill_id']) ?>');" title="Delete">
+                                <i class="fa fa-trash-can"></i>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            <?php endwhile; endif; ?>
+        </tbody>
+        <?php if ($num > 0): ?>
+        <tfoot style="background: #f8fafc; font-weight: 700; border-top: 2px solid #e2e8f0; color: #0f172a;">
             <tr>
-<td width="35">&nbsp;</td>
-<td width="95" align="center">&nbsp;</td>
-<td width="34">&nbsp;</td>
-<td width="58">&nbsp;</td>
-<td width="61">&nbsp;</td>
-<td width="61">&nbsp;</td>
-<td width="70">Total </td>
-<td width="40"><?php echo $rent; ?></td>
-<td width="79"><?php echo $dep; ?></td>
-<td width="70"><?php ///echo $pa ?></td>
+                <td colspan="7" style="padding: 10px 14px; text-align: right;">Total Active:</td>
+                <td style="padding: 10px 14px; text-align: right; font-family: monospace;">₹ <?= number_format($rent) ?></td>
+                <td style="padding: 10px 14px; text-align: right; font-family: monospace;">₹ <?= number_format($dep) ?></td>
+                <td></td>
+            </tr>
+        </tfoot>
+        <?php endif; ?>
+    </table>
+</div>
 
-
-     </tr>
-	 <tr>
-<td colspan="7" align="right"><b>Total Rent Amount :</b></td>
-<!--<td width="103"><?php ///echo $pd; ?></td>-->
-<td width="136"><?php echo $rent ?></td>
- <?php ///echo $s."/".$a."/".$row2[0]."<br/>"; ?>
- <td  align="left" width="135"></td><td  align="left" width="135"></td>
-     </tr>
-	 
-	  <tr>
-	  <?php $sql4=mysqli_query($con,"SELECT SUM( rent_amount)  FROM `phppos_rent`  WHERE `cust_id`='$id'");
-$row4=mysqli_fetch_row($sql4);
-?>
-	  
-<td colspan="7" align="right"><b><strong>Total Rent and Rent Return Amount</strong>:</b></td>
-<!--<td width="103"><?php ///echo $pd; ?></td>-->
-<td width="136"><?php echo $row4[0]; ?></td>
- <?php ///echo $s."/".$a."/".$row2[0]."<br/>"; ?>
- <td  align="left" width="135"></td><td  align="left" width="135"></td>
-     </tr>
-	 
-	  <tr>
-<td colspan="7" align="right"><b>Total Paid Amount :</b></td>
-<!--<td width="103"><?php
- $sql5=mysqli_query($con,"SELECT SUM( amount ) FROM  `rent_amount` WHERE  `cust_id`='$id'");
-$row5=mysqli_fetch_row($sql5);
- ?></td>-->
-<td width="136"><?php echo $row5[0]; ?></td>
- <?php ///echo $s."/".$a."/".$row2[0]."<br/>"; ?>
- <td  align="left" width="135"></td><td  align="left" width="135"></td>
-     </tr>
-	 
-	  <tr>
-<td colspan="7" align="right"><b>Total Balance Amount :</b></td>
-<!--<td width="103"><?php ///echo $pd; ?></td>-->
-<td width="136"><?php echo $row4[0]-$row5[0] ?></td>
- <?php ///echo $s."/".$a."/".$row2[0]."<br/>"; ?>
- <td  align="left" width="135"></td><td  align="left" width="135"></td>
-     </tr>
-	 
-	 
-            </table>
-<?php CloseCon($con);?>			  
-               
+<?php CloseCon($con); ?>

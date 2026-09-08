@@ -46,9 +46,8 @@ $sku = $_REQUEST['sku'];
         const allSkus = [...existingSkus, ...newSkus];
 
         // Construct the URL
-        const baseUrl = 'https://srishringarr.com/pos/reports/viewprerentedprice.php';
         const skuParams = allSkus.map(sku => `sku[]=${encodeURIComponent(sku)}`).join('&');
-        const finalUrl = `${baseUrl}?${skuParams}`;
+        const finalUrl = `viewprerentedprice.php?${skuParams}`;
         
         // Redirect to the constructed URL
         window.location.href = finalUrl;

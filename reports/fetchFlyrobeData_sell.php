@@ -15,20 +15,31 @@ $selectFrachise = isset($_REQUEST['selectFrachise']) ? $_REQUEST['selectFrachise
 $selected_month = isset($_REQUEST['month']) ? $_REQUEST['month'] : $current_month;
 $selected_year = isset($_REQUEST['year']) ? $_REQUEST['year'] : $current_year;
 
+$month_num_map = [
+    'Jan' => 1, 'Feb' => 2, 'Mar' => 3, 'Apr' => 4,
+    'May' => 5, 'Jun' => 6, 'Jul' => 7, 'Aug' => 8,
+    'Sep' => 9, 'Oct' => 10, 'Nov' => 11, 'Dec' => 12
+];
+
 // Base SQL
 $sql = "
-SELECT a.*, r.bill_date, r.cust_id, r.new_bill_number
+SELECT a.*, r.bill_date, r.cust_id, r.new_bill_number,
+       p.first_name, p.last_name, p.phone_number
 FROM flyrob_commission_sell a
 JOIN approval r ON a.purchase_id = r.bill_id
+LEFT JOIN phppos_people p ON r.cust_id = p.person_id
 WHERE a.status = 'Visible'";
 
 // Filters
-if ($selected_month && $selected_year) {
-    $sql .= " AND MONTH(r.bill_date) = MONTH(STR_TO_DATE('$selected_month', '%b')) AND YEAR(r.bill_date) = '$selected_year'";
-} elseif ($selected_month) {
-    $sql .= " AND MONTH(r.bill_date) = MONTH(STR_TO_DATE('$selected_month', '%b'))";
-} elseif ($selected_year) {
-    $sql .= " AND YEAR(r.bill_date) = '$selected_year'";
+if ($selected_month && $selected_month !== 'all' && isset($month_num_map[$selected_month])) {
+    $m_num = $month_num_map[$selected_month];
+    $sql .= " AND MONTH(r.bill_date) = $m_num";
+}
+if ($selected_year && $selected_year !== 'all') {
+    $y_int = intval($selected_year);
+    if ($y_int > 0) {
+        $sql .= " AND YEAR(r.bill_date) = $y_int";
+    }
 }
 
 if ($selectFrachise === '2') {
@@ -98,12 +109,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_REQUEST['export'])) {
             $thisProductTotalGst = round($thisProductTotalTaxable * ($productType == 2 ? 0.12 : 0.03), 2);
             $ssfs = $netAmount - $commision_amount;
 
-            // Customer Name
-            $customerName = '';
-            $peoplesql = mysqli_query($con, "SELECT first_name, last_name FROM phppos_people WHERE person_id = '$cust_id'");
-            if ($peoplesqlResult = mysqli_fetch_assoc($peoplesql)) {
-                $customerName = $peoplesqlResult['first_name'] . ' ' . $peoplesqlResult['last_name'];
-            }
+            $customerName = trim(($row['first_name'] ?? '') . ' ' . ($row['last_name'] ?? ''));
+            if (!$customerName) $customerName = 'Walk-in';
 
             // Totals
             $totals['rentAmount'] += $totalProductAmount;
@@ -172,12 +179,8 @@ if (isset($_REQUEST['export'])) {
             $ssfs = $netAmount - $commision_amount;
             $gstAmount = round(($totalProductAmount / ($productType == 2 ? 1.12 : 1.03)) * ($productType == 2 ? 0.12 : 0.03), 2);
 
-            $cust_id = $row['cust_id'];
-            $customerName = '';
-            $peoplesql = mysqli_query($con, "SELECT first_name, last_name FROM phppos_people WHERE person_id = '$cust_id'");
-            if ($peoplesqlResult = mysqli_fetch_assoc($peoplesql)) {
-                $customerName = $peoplesqlResult['first_name'] . ' ' . $peoplesqlResult['last_name'];
-            }
+            $customerName = trim(($row['first_name'] ?? '') . ' ' . ($row['last_name'] ?? ''));
+            if (!$customerName) $customerName = 'Walk-in';
 
             fputcsv($output, [
                 date('d-m-Y', strtotime($billDate)),

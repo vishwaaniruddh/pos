@@ -1,129 +1,132 @@
 <?php 
-// include('config.php');
-include('../db_connection.php') ;
-$con=OpenSrishringarrCon();
+session_start();
 
+if (file_exists(__DIR__ . '/../db_connection.php')) {
+    include_once(__DIR__ . '/../db_connection.php');
+} else {
+    include_once('../db_connection.php');
+}
+$con = OpenSrishringarrCon();
 
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
+$bill_id   = isset($_POST['bill_id']) ? mysqli_real_escape_string($con, trim($_POST['bill_id'])) : '';
+$bill_date = isset($_POST['bill_date']) ? trim($_POST['bill_date']) : '';
+$supp_id   = isset($_POST['supp_id']) ? mysqli_real_escape_string($con, trim($_POST['supp_id'])) : '0';
 
-$bill_id=$_POST['bill_id']; 
-//echo $bill_id."<br>";
-$bill_date=$_POST['bill_date'];
-$supp_id=$_POST['supp_id'];
-//echo $supp_id."<br>";
+$myitemid  = isset($_POST['myitemid']) ? $_POST['myitemid'] : [];
+$item_cat  = isset($_POST['item_cat']) ? $_POST['item_cat'] : [];
+$item_no   = isset($_POST['item_no']) ? $_POST['item_no'] : [];
+$cprice    = isset($_POST['cprice']) ? $_POST['cprice'] : [];
+$uprice    = isset($_POST['uprice']) ? $_POST['uprice'] : [];
+$qty       = isset($_POST['qty']) ? $_POST['qty'] : [];
 
-$myitemid=$_POST['myitemid']; //name of item
-//print_r($myitemid);
-$item_cat=$_POST['item_cat'];
-//echo $item_cat."<br>"; //cat of item
-$item_no=$_POST['item_no'];
-//echo $item_no."<br>";//Number of item
-$cprice=$_POST['cprice'];
-//print_r($cprice)."<br>";
-$uprice=$_POST['uprice'];
-//echo $uprice."<br>";
-$qty=$_POST['qty'];
-$totalqty=$_POST['totalqty'];
-$totalamt=$_POST['totalamt'];
-$payamt=$_POST['payamt'];
-$distype=$_POST['distype'];
-$discount=$_POST['per'];
+$totalqty  = isset($_POST['totalqty']) ? floatval($_POST['totalqty']) : 0;
+$totalamt  = isset($_POST['totalamt']) ? floatval($_POST['totalamt']) : 0;
+$payamt    = isset($_POST['payamt']) ? floatval($_POST['payamt']) : 0;
+$distype   = isset($_POST['distype']) ? mysqli_real_escape_string($con, trim($_POST['distype'])) : 'Rupees';
+$discount  = isset($_POST['per']) ? floatval($_POST['per']) : 0;
 
-$errors=0;
+$is_ajax = (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest');
 
-$begin=mysqli_query($con,"BEGIN;");
+// Normalize date to YYYY-MM-DD
+$db_bill_date = date('Y-m-d');
+if (!empty($bill_date)) {
+    if (preg_match('/^\d{4}-\d{2}-\d{2}$/', $bill_date)) {
+        $db_bill_date = $bill_date;
+    } else if (preg_match('/^(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{4})$/', $bill_date, $m)) {
+        $db_bill_date = sprintf('%04d-%02d-%02d', $m[3], $m[2], $m[1]);
+    } else {
+        $ts = strtotime($bill_date);
+        if ($ts) $db_bill_date = date('Y-m-d', $ts);
+    }
+}
 
-$qrypur=mysqli_query($con,"INSERT INTO `phppos_purchase`(`pur_id`, `bill_id`, `supp_id`, `date`, `totalqty`, `totalamt`, `outstanding`, `discount`, `payamt`, `dis_type`) VALUES ('','$bill_id','$supp_id',STR_TO_DATE('".$bill_date."','%d/%m/%Y'),'$totalqty','$totalamt','$payamt','$discount','$payamt','$distype')");
+$errors = 0;
+mysqli_query($con, "BEGIN;");
 
-if($qrypur)
- {
-$pur_id=mysqli_insert_id($con);
- for($i=0;$i<count($myitemid);$i++)
-   {  
-         $res=mysqli_query($con,"select * from phppos_items where name='".$myitemid[$i]."' ");
-         $row = mysqli_fetch_array($res); 
-         
-    if(mysqli_num_rows($res)>0)
-    {
+$qrypur = mysqli_query($con, "INSERT INTO `phppos_purchase`(`pur_id`, `bill_id`, `supp_id`, `date`, `totalqty`, `totalamt`, `outstanding`, `discount`, `payamt`, `dis_type`) VALUES ('', '$bill_id', '$supp_id', '$db_bill_date', '$totalqty', '$totalamt', '$payamt', '$discount', '$payamt', '$distype')");
+
+if ($qrypur) {
+    $pur_id = mysqli_insert_id($con);
+    
+    for ($i = 0; $i < count($myitemid); $i++) {
+        $raw_name = trim($myitemid[$i]);
+        if ($raw_name === '') continue; // Skip empty rows
+
+        $escaped_name = mysqli_real_escape_string($con, $raw_name);
+        $escaped_cat  = isset($item_cat[$i]) ? mysqli_real_escape_string($con, trim($item_cat[$i])) : '';
+        $escaped_no   = isset($item_no[$i]) ? mysqli_real_escape_string($con, trim($item_no[$i])) : '';
+        $row_cprice   = isset($cprice[$i]) ? floatval($cprice[$i]) : 0;
+        $row_uprice   = isset($uprice[$i]) ? floatval($uprice[$i]) : 0;
+        $row_qty      = isset($qty[$i]) ? intval($qty[$i]) : 0;
+
+        $productType = '';
+        if ($escaped_cat !== '') {
+            $productsql = mysqli_query($con, "SELECT `typ` FROM `categories` WHERE `category` = '$escaped_cat'");
+            if ($productsql && $productsql_result = mysqli_fetch_assoc($productsql)) {
+                $productType = mysqli_real_escape_string($con, $productsql_result['typ']);
+            }
+        }
+
+        $res = mysqli_query($con, "SELECT * FROM `phppos_items` WHERE `name` = '$escaped_name' AND `is_deleted` = 0");
         
-        $orgqt=$row["quantity"];
-        
-        $newqtry=$qty[$i]+$orgqt;
+        if ($res && mysqli_num_rows($res) > 0) {
+            $row = mysqli_fetch_array($res);
+            $orgqt = intval($row["quantity"]);
+            $newqtry = $row_qty + $orgqt;
+            $myautoid = $row["item_id"];
 
+            $str = "UPDATE `phppos_items` SET `category` = '$escaped_cat', `supplier_id` = '$supp_id', `description` = '$db_bill_date', `cost_price` = '$row_cprice', `unit_price` = '$row_uprice', `quantity` = '$newqtry', `category_type` = '$productType' WHERE `item_number` = '$escaped_no'";
+            $qryitm = mysqli_query($con, $str);
+            if (!$qryitm) $errors++;
+        } else {
+            $itemNumber = $escaped_no;
+            $insert_item_qry = "INSERT INTO `phppos_items`(`name`, `category`, `supplier_id`, `item_number`, `description`, `cost_price`, `unit_price`, `quantity`, `category_type`) VALUES ('$escaped_name', '$escaped_cat', '$supp_id', '$itemNumber', '$db_bill_date', '$row_cprice', '$row_uprice', '$row_qty', '$productType')";
+            $qryitm = mysqli_query($con, $insert_item_qry);
+            $myautoid = mysqli_insert_id($con);
+            if (!$qryitm) $errors++;
+        }
 
+        // Insert into phppos_purchase_details
+        $det = mysqli_query($con, "INSERT INTO `phppos_purchase_details`(`id`, `pur_id`, `item_id`, `qty`, `price`) VALUES ('', '$pur_id', '$myautoid', '$row_qty', '$row_cprice')");
+        if (!$det) $errors++;
+    }
+} else {
+    $errors++;
+}
 
-$productsql  = mysqli_query($con,"select * from categories where category='".$item_cat[$i]."'");
-$productsql_result = mysqli_fetch_assoc($productsql);
-$productType= $productsql_result['typ'];
+if ($errors == 0) {
+    mysqli_query($con, "COMMIT;");
+    if ($is_ajax) {
+        header('Content-Type: application/json');
+        echo json_encode([
+            'status' => 'success',
+            'message' => 'Purchase invoice #' . htmlspecialchars($bill_id) . ' recorded successfully.',
+            'pur_id' => $pur_id,
+            'total_qty' => $totalqty,
+            'pay_amt' => $payamt
+        ]);
+        exit;
+    }
+    header('location:view_bills.php');
+    exit;
+} else {
+    mysqli_query($con, "ROLLBACK;");
+    $err = mysqli_error($con);
+    if ($is_ajax) {
+        header('Content-Type: application/json');
+        echo json_encode([
+            'status' => 'error',
+            'message' => 'Failed to save purchase bill: ' . $err
+        ]);
+        exit;
+    }
+    echo '<script>alert("Error processing purchase: ' . addslashes($err) . '"); window.history.back();</script>';
+    exit;
+}
 
-
-$str="update phppos_items set category='".$item_cat[$i]."',supplier_id='".$supp_id."' ,description='".$bill_date."', cost_price='".$cprice[$i]."',unit_price='".$uprice[$i]."',quantity='".$newqtry."' ,category_type='".$productType."' where item_number='".$item_no[$i]."'";
-
-   $myautoid=$row["item_id"];
-   $qryitm=mysqli_query($con,$str);
-   	if(!$qryitm)
-   	{
-	$errors++;
-   	}
-   
-   echo mysqli_error($con);
-   
-    }else{
-
-
-
-$selectMaxidsql = mysqli_query($con,"select max(item_id) as maxitem_id from phppos_items");
-$selectMaxidResult = mysqli_fetch_assoc($selectMaxidsql);
-$selectMaxid = $selectMaxidResult['maxitem_id'];
-
-$itemNumber = $item_no[$i] ;  
-// $itemNumber = $item_no[$i].'_'. $selectMaxid ;  
-
-
-// echo "INSERT INTO `phppos_items`(`name`, `category`, `supplier_id`, `item_number`, `description`, `cost_price`, `unit_price`, `quantity`) VALUES ('".$myitemid[$i]."','".$item_cat[$i]."', '".$supp_id."','".$itemNumber."' ,'".$bill_date."', '".$cprice[$i]."', '".$uprice[$i]."', '".$qty[$i]."')" ; 
-
-
-
-$productsql  = mysqli_query($con,"select * from categories where category='".$item_cat[$i]."'");
-$productsql_result = mysqli_fetch_assoc($productsql);
-$productType= $productsql_result['typ'];
-
-
-
-   echo $qryitm=mysqli_query($con,"INSERT INTO `phppos_items`(`name`, `category`, `supplier_id`, `item_number`, `description`, `cost_price`, `unit_price`, `quantity`,`category_type`) VALUES ('".$myitemid[$i]."','".$item_cat[$i]."', '".$supp_id."','".$itemNumber."' ,'".$bill_date."', '".$cprice[$i]."', '".$uprice[$i]."', '".$qty[$i]."','".$productType."')");
-  
-   $myautoid=mysqli_insert_id($con);
-  
-   }
-  
-  // -----------Insert data phppos_purchase_details table-----------------  
-   $det=mysqli_query($con,"INSERT INTO `phppos_purchase_details`(`id`, `pur_id`, `item_id`, `qty`, `price`) VALUES ('','$pur_id', '".$myautoid."', '$qty[$i]', '$cprice[$i]')");			
-	
-	if(!$qryitm || !$det)
-	$errors++;
-  }
-  
- }
- else
- $errors++;
-	if($errors==0)
-	{
-	
-	mysqli_query($con,"COMMIT;");
-	echo " <center>Entries Done Successfully.<br> <<==<a href='purchase_entrytest.php'>GO BACK <<==</a> <a href='/pos/home_dashboard.php'>HOME <<==</a> <a href=''>BACK PURCHASE</a> </center>";
-	if(!$det){
-		$err=mysqli_error($con);
-		//header('Location:addlead.php?err='.$err);
-		}		
-	
-		}else{
-			mysqli_query($con,"ROLLBACK;");
-// 			echo "Error in Insering  ".mysqli_error($con)."<a href='purchase_entrytest.php'>GO BACK <<==</a>";
-			}
-	
-CloseCon($con);	
-	
+CloseCon($con);
 ?>

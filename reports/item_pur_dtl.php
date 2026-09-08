@@ -17,12 +17,20 @@ $qryitems=mysqli_query($con,"select * from `approval_detail` where `item_id`='$i
 echo "<table align='center' border='1' width='80%'><tr><th align='center' colspan='7'> Item Name : $item </th></tr>";
 echo "<tr><th>Sr No.</th><th> Customer Name</th><th>Phone No.</th><th>Bill No</th><th>Bill Date</th><th>Qty</th><th>Amount</th></tr>";
 $i=0;
-while($resitems=mysqli_fetch_row($qryitems))
+while($resitems = mysqli_fetch_row($qryitems))
 {
-		$resbill=mysqli_fetch_row(mysqli_query($con,"select `cust_id`,`bill_date` from `approval` where bill_id ='$resitems[0]' "));
-		$rescust=mysqli_fetch_row(mysqli_query($con,"Select * from `phppos_people` where `person_id`='$resbill[0]'"));
-		
-echo "<tr><td align='center'>".++$i."</td><td>".$rescust[0]."-".$rescust[1]."</td><td>".$rescust[2]."</td><td align='center'>".$resitems[0]."</td><td align='center'>  ".date('d/m/Y',strtotime($resbill[1]))."</td><td align='right'>".$resitems[2]."</td><td align='right'>".$resitems[7]."</td></tr>";	
+    $q_bill = mysqli_query($con, "select `cust_id`,`bill_date` from `approval` where bill_id ='$resitems[0]' ");
+    $resbill = $q_bill ? mysqli_fetch_row($q_bill) : null;
+    $cust_id = $resbill ? $resbill[0] : 0;
+    
+    $q_cust = mysqli_query($con, "Select * from `phppos_people` where `person_id`='$cust_id'");
+    $rescust = $q_cust ? mysqli_fetch_row($q_cust) : null;
+    $cust_first = $rescust ? ($rescust[0] ?? '') : '';
+    $cust_last  = $rescust ? ($rescust[1] ?? '') : '';
+    $cust_phone = $rescust ? ($rescust[2] ?? '') : '';
+    $bill_dt    = ($resbill && !empty($resbill[1])) ? date('d/m/Y', strtotime($resbill[1])) : '—';
+    
+    echo "<tr><td align='center'>".++$i."</td><td>".$cust_first."-".$cust_last."</td><td>".$cust_phone."</td><td align='center'>".$resitems[0]."</td><td align='center'>  ".$bill_dt."</td><td align='right'>".($resitems[2] ?? 1)."</td><td align='right'>".($resitems[7] ?? 0)."</td></tr>";	
 }
 echo "</table>";
 

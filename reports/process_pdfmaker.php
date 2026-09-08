@@ -353,23 +353,20 @@ function slugify_product_title($text) {
 }
 
 // Prepare POST data
-$pdfName = isset($_REQUEST['pdfName']) ? $_REQUEST['pdfName'] : 'output';
+$pdfName = isset($_REQUEST['pdfName']) ? preg_replace('/[^A-Za-z0-9_\-]/', '_', trim($_REQUEST['pdfName'])) : 'Catalog_' . date('Ymd_His');
+if (empty($pdfName)) $pdfName = 'Catalog_' . date('Ymd_His');
 
-if (!isset($web_con) || !$web_con) {
-    $dbhost = "localhost";
-    $dbuser = "u464193275_srishrinjuser";
-    $dbpass = "9b@hMgk!=zI";
-    $db = "u464193275_srishrinjewels";
-    
-    $web_con = @new mysqli($dbhost, $dbuser, $dbpass, $db);
-    if (!$web_con || $web_con->connect_error) {
-        $is_local = isset($_SERVER['HTTP_HOST']) && (in_array($_SERVER['HTTP_HOST'], ['localhost', '127.0.0.1', '::1']) || strpos($_SERVER['HTTP_HOST'], 'localhost:') === 0);
-        if ($is_local) {
-            $web_con = @mysqli_connect("localhost", "root", "", "u464193275_srishringarr");
-        } else {
-            $web_con = @mysqli_connect("localhost", "u464193275_sarmicropos", "Mypos1234", "u464193275_srishringarr");
-        }
+if (!isset($web_con) || !$web_con || (isset($web_con->connect_error) && $web_con->connect_error)) {
+    if (function_exists('OpenNewSrishringarrCon')) {
+        $web_con = OpenNewSrishringarrCon();
     }
+}
+
+if (!$web_con || $web_con->connect_error) {
+    $is_local = isset($_SERVER['HTTP_HOST']) && (in_array($_SERVER['HTTP_HOST'], ['localhost', '127.0.0.1', '::1']) || strpos($_SERVER['HTTP_HOST'], 'localhost:') === 0);
+    $dbuser = $is_local ? "root" : "u464193275_srishrinjuser";
+    $dbpass = $is_local ? "" : "9b@hMgk!=zI";
+    $web_con = @new mysqli("localhost", $dbuser, $dbpass, "u464193275_srishrinjewels");
 }
 
 // Filter POST data to exclude submit button and pdfName
@@ -380,6 +377,32 @@ foreach ($_POST as $k => $v) {
 }
 
 $total_items = count($product_posts);
+
+if ($total_items === 0) {
+    if (ob_get_length()) ob_end_clean();
+    ?>
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>No Products Selected</title>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    </head>
+    <body style="background: #f8fafc; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; display: flex; align-items: center; justify-content: center; min-height: 100vh;">
+        <div class="card p-4 shadow-sm" style="border: 1px solid #e2e8f0; border-radius: 8px; max-width: 460px; text-align: center; background: #ffffff;">
+            <h5 style="color: #0f172a; font-weight: 700;">No Products Selected</h5>
+            <p style="color: #64748b; font-size: 13.5px; margin-top: 6px;">No products or image angles were submitted to generate the PDF catalog.</p>
+            <div class="mt-3">
+                <a href="pdfmaker.php" class="btn btn-dark" style="background: #0f172a; border-color: #0f172a; font-size: 13px; font-weight: 600; padding: 8px 18px; border-radius: 6px;">
+                    Return to PDF Maker
+                </a>
+            </div>
+        </div>
+    </body>
+    </html>
+    <?php
+    exit;
+}
 
 // Loop through each product
 foreach ($product_posts as $radioName => $selectedValue) {
@@ -429,21 +452,31 @@ foreach ($product_posts as $radioName => $selectedValue) {
     $product_slug = slugify_product_title($product_name);
     $product_url = 'https://srishringarr.com/product/' . $product_slug . '-' . $product_id;
 
-    // Database query to get image
-    $sqlimg = "SELECT img_name FROM `product_images_new` WHERE `gproduct_id`='$product_id'";
-    if (!empty($selectedImage)) {
-        $sqlimg .= " AND img_name LIKE '%" . mysqli_real_escape_string($web_con, $selectedImage) . "%'";
-    }
+    // Robust database query to get selected angle or primary image
+    $qryimg = false;
+    if ($web_con) {
+        $cleanSku = mysqli_real_escape_string($web_con, $sku);
+        $numId = (is_numeric($product_id) && (int)$product_id > 0) ? (int)$product_id : 0;
 
-    $qryimg = mysqli_query($web_con, $sqlimg);
+        $whereClauses = ["`pro_code` = '$cleanSku'", "`prod_name` = '$cleanSku'"];
+        if ($numId > 0) {
+            $whereClauses[] = "`gproduct_id` = $numId";
+            $whereClauses[] = "`product_id` = $numId";
+        }
+        $whereSql = "(" . implode(' OR ', $whereClauses) . ")";
 
-    if (!$qryimg || mysqli_num_rows($qryimg) == 0) {
-        $sqlimg = "SELECT img_name FROM `product_images_new` WHERE `product_id`='$product_id'";
-        if (!empty($selectedImage)) {
+        $sqlimg = "SELECT img_name FROM `product_images_new` WHERE $whereSql";
+        if (!empty($selectedImage) && $selectedImage !== 'default') {
             $sqlimg .= " AND img_name LIKE '%" . mysqli_real_escape_string($web_con, $selectedImage) . "%'";
         }
-
+        $sqlimg .= " ORDER BY rank ASC, id ASC LIMIT 1";
         $qryimg = mysqli_query($web_con, $sqlimg);
+
+        // Fallback without specific angle if angle matched nothing
+        if ((!$qryimg || mysqli_num_rows($qryimg) == 0) && !empty($selectedImage)) {
+            $sqlimgFallback = "SELECT img_name FROM `product_images_new` WHERE $whereSql ORDER BY rank ASC, id ASC LIMIT 1";
+            $qryimg = mysqli_query($web_con, $sqlimgFallback);
+        }
     }
 
     if ($qryimg && mysqli_num_rows($qryimg) > 0) {

@@ -1,113 +1,105 @@
-<style>
-table #tbl{
-	
-	color:#33F;
-	font-style:oblique;}
-</style>
 <?php
-// include('config.php');
-include('../db_connection.php') ;
-$con=OpenSrishringarrCon();
-
-
-$item_id=$_GET['item_id'];
-$frmdate=$_GET['frmdate'];
-$todate=$_GET['todate'];
-$frmdate=str_replace('/','-',$frmdate);
-$todate=str_replace('/','-',$todate);
-$status=$_GET['status'];
-
-$checkItem = 0; 
-if($frmdate==""){
-    $frmdate=date('Y-m-d',strtotime('today'));    
-    $checkItem=1 ;
+if (file_exists(__DIR__ . '/../db_connection.php')) {
+    include_once(__DIR__ . '/../db_connection.php');
+} elseif (file_exists('../db_connection.php')) {
+    include_once('../db_connection.php');
 }
-else{
-    $frmdate=date('Y-m-d',strtotime($frmdate));    
+$con = OpenSrishringarrCon();
+
+$item_id = trim((string)($_GET['item_id'] ?? ''));
+$frmdate = trim((string)($_GET['frmdate'] ?? ''));
+$todate  = trim((string)($_GET['todate'] ?? ''));
+$status  = trim((string)($_GET['status'] ?? ''));
+
+$frmdate = str_replace('/', '-', $frmdate);
+$todate  = str_replace('/', '-', $todate);
+$from_sql = ($frmdate !== '') ? date('Y-m-d', strtotime($frmdate)) : '';
+$to_sql   = ($todate !== '') ? date('Y-m-d', strtotime($todate)) : '';
+
+$where = ["od.item_id = '" . mysqli_real_escape_string($con, $item_id) . "'"];
+if ($from_sql !== '' && $to_sql !== '') {
+    $where[] = "r.bill_date BETWEEN '$from_sql' AND '$to_sql'";
+} elseif ($from_sql !== '') {
+    $where[] = "r.bill_date >= '$from_sql'";
+} elseif ($to_sql !== '') {
+    $where[] = "r.bill_date <= '$to_sql'";
 }
 
-if($todate=="")
-$todate=date('Y-m-d',strtotime('today'));
-else
-$todate=date('Y-m-d',strtotime($todate));
-
-/*echo "select * from phppos_people where person_id in (select distinct(`cust_id`) from `phppos_rent` where `bill_date` between '".$frmdate."' and '".$todate."' and (booking_status='Picked' or booking_status='Returned')) order by last_name";*/
-//echo $status;
-if($frmdate!="" && $checkItem==0)
-{	
-	
-	echo "select * from phppos_people where person_id in (select distinct(`cust_id`) from `phppos_rent` where `bill_date` between '".$frmdate."' and '".$todate."' and (booking_status='Picked' or booking_status='Returned')) order by last_name" ;
-	$qryyr=mysqli_query($con,"select * from phppos_people where person_id in (select distinct(`cust_id`) from `phppos_rent` where `bill_date` between '".$frmdate."' and '".$todate."' and (booking_status='Picked' or booking_status='Returned')) order by last_name");
-	}else if($item_id!=''){
-
-echo "SELECT `bill_id` FROM `phppos_rent` WHERE `bill_id` in(select `bill_id` from `approval_detail` where `item_id` ='$item_id') ";
-$qryyr=mysqli_query($con,"SELECT `bill_id` FROM `phppos_rent` WHERE `bill_id` in(select `bill_id` from `approval_detail` where `item_id` ='$item_id') ");	    
-	}
-else
-{
-// echo "select `bill_id` from `order_detail` where `item_id` ='$item_id'";
-$qryyr=mysqli_query($con,"SELECT `bill_id` FROM `phppos_rent` WHERE `bill_id` in(select `bill_id` from `order_detail` where `item_id` ='$item_id') ");
+if ($status !== '' && $status !== 'all' && $status !== 'a' && $status !== 's') {
+    $where[] = "r.booking_status = '" . mysqli_real_escape_string($con, $status) . "'";
 }
-$arr=array();
-$i=0;
-while($res=mysqli_fetch_row($qryyr)){
-	$arr[$i]=$res[0];
-	$i++;
-	}
-	$custname=array();
-	$qty=array();
-	//print_r($arr);
-	
-	$amt=array();
-	for($j=0;$j<count($arr);$j++)
-	{
-		//echo "<tr><td>";
-		$qrycust=mysqli_query($con,"Select * from `phppos_people` where person_id='$arr[$j]'");
-		$rescust=mysqli_fetch_row($qrycust);
-		//$num=mysqli_num_rows($qrycust);
-		
-		$custname[$j]=$rescust[0]." ".$rescust[1];
-		//echo $rescust[0]." ".$rescust[1]." -- ".$arr[$j]."</td>";
-		if($frmdate!="")
-		{
-			$qrybal=mysqli_query($con,"SELECT sum(qty),sum(amount),sum(return_qty) FROM `approval_detail` where `bill_id`in( select `bill_id` from `approval` where `status`='$status' and `cust_id`='$arr[$j]' and (`bill_date` between STR_TO_DATE('".$frmdate."','%d/%m/%Y') and STR_TO_DATE('".$todate."','%d/%m/%Y'))) and `item_id`='$item_id'");
-		}
-		else{
-	$qrybal=mysqli_query($con,"SELECT sum(qty), sum(amount),sum(return_qty) FROM `approval_detail` where `bill_id`in( select `bill_id` from `approval` where `status`='$status' and `cust_id`='$arr[$j]' and `item_id`='$item_id')");}
-	$row=mysqli_fetch_row($qrybal);
-	$amt[$j]=$row[1];
-	$qty[$j]=$row[0];
-	$ret[$j]=$row[2];
-	//echo "<td align='right'> ".$row[0]."</td>";
-	//echo "</tr>";
-	}
-	//print_r($custname);
-	//print_r($qty);
-	/*
-	for($i=0;$i<count($qty);$i++)
-	{
-		for($j=0;$j<(count($qty)-1);$j++)
-		{
-			if($qty[$j]<$qty[$j+1])
-			{
-				$temp1=$qty[$j];$temp=$custname[$j];$temp2=$amt[$j];
-				$qty[$j]=$qty[$j+1];$custname[$j]=$custname[$j+1]; $amt[$j]=$amt[$j+1];	
-				$qty[$j+1]=$temp1; $custname[$j+1]=$temp;$amt[$j+1]=$temp2;
-			}	
-		}	
-	}*/
-	echo "<br/>";
-	//print_r($custname);
-	//print_r($qty);
-	echo "<table width='100%' bgcolor='#CCCCCC' border='1' id='tbl'><tr><td colspan='4' align='center' > <strong>  **Rent Report**<br>Item Name : $item_id</strong></td></tr><tr><th align='center'>Sr No</th><th align='center'>Customer Name</th><th align='center'>Quantity</th><th align='center'>Amount</th></tr>";
-	$k=1;
-	for($i=0;$i<count($qty);$i++)
-	{
-	if($qty[$i]>$ret[$i]){
-		echo "<tr><td align='center'>".($k)."</td><td align='center'>".$custname[$i]."</td><td align='right'>".($qty[$i]-$ret[$i])."</td><td align='right'>".($qty[$i]-$ret[$i])*$amt[$i]/$qty[$i]."</td></tr>"	;
-		$k++;
-		}
-	}
-	echo "</table>";
-	CloseCon($con);
+
+$sql = "
+    SELECT 
+        od.bill_id,
+        od.qty,
+        od.rent,
+        od.deposit,
+        od.pickup_date,
+        od.return_date,
+        r.new_bill_number,
+        r.bill_date,
+        r.booking_status,
+        cust.first_name,
+        cust.last_name,
+        cust.phone_number
+    FROM order_detail od
+    JOIN phppos_rent r ON od.bill_id = r.bill_id
+    LEFT JOIN phppos_people cust ON r.cust_id = cust.person_id
+    WHERE " . implode(' AND ', $where) . "
+    ORDER BY r.bill_date DESC, od.bill_id DESC
+";
+
+$res = mysqli_query($con, $sql);
+?>
+<table width="100%" border="1" cellpadding="6" cellspacing="0" style="border-collapse: collapse; font-family: sans-serif; font-size: 13px;">
+    <tr style="background: #0f172a; color: #fff;">
+        <th colspan="7" align="center" style="padding: 10px;">Rental Ledger for SKU: <?= htmlspecialchars($item_id) ?></th>
+    </tr>
+    <tr style="background: #f1f5f9;">
+        <th style="width: 40px;">#</th>
+        <th>Bill No</th>
+        <th>Bill Date</th>
+        <th>Customer Details</th>
+        <th align="center">Status</th>
+        <th align="center">Qty</th>
+        <th align="right">Rent (₹)</th>
+    </tr>
+    <?php
+    $i = 0;
+    $total_qty  = 0;
+    $total_rent = 0;
+    if ($res && mysqli_num_rows($res) > 0) {
+        while ($row = mysqli_fetch_assoc($res)) {
+            $i++;
+            $b_no = !empty($row['new_bill_number']) ? $row['new_bill_number'] : ('BILL-' . $row['bill_id']);
+            $c_name = trim(($row['first_name'] ?? '') . ' ' . ($row['last_name'] ?? '')) ?: 'Guest';
+            $q = intval($row['qty'] ?? 1);
+            $r = floatval($row['rent'] ?? 0);
+            $total_qty  += $q;
+            $total_rent += $r;
+            ?>
+            <tr>
+                <td align="center"><?= $i ?></td>
+                <td><strong><?= htmlspecialchars($b_no) ?></strong></td>
+                <td><?= $row['bill_date'] ? date('d/m/Y', strtotime($row['bill_date'])) : '—' ?></td>
+                <td><?= htmlspecialchars($c_name) ?> (<?= htmlspecialchars($row['phone_number'] ?? '—') ?>)</td>
+                <td align="center"><?= htmlspecialchars($row['booking_status'] ?? 'Returned') ?></td>
+                <td align="center"><?= $q ?></td>
+                <td align="right">₹ <?= number_format($r) ?></td>
+            </tr>
+            <?php
+        }
+    } else {
+        echo "<tr><td colspan='7' align='center' style='padding: 20px; color: #64748b;'>No rental bookings recorded for SKU: " . htmlspecialchars($item_id) . "</td></tr>";
+    }
+    ?>
+    <tr style="background: #f1f5f9; font-weight: bold;">
+        <td colspan="5" align="right">Total:</td>
+        <td align="center"><?= number_format($total_qty) ?></td>
+        <td align="right">₹ <?= number_format($total_rent) ?></td>
+    </tr>
+</table>
+<?php
+CloseCon($con);
 ?>
