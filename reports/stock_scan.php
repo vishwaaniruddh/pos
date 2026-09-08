@@ -237,7 +237,7 @@ if ($sheet_id === 0) {
 
     <!-- Font Awesome & Google Fonts -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
     <!-- SheetJS for Excel Export -->
     <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
@@ -378,7 +378,8 @@ if ($sheet_id === 0) {
             border: none;
             outline: none;
             background: transparent;
-            font-family: 'JetBrains Mono', monospace;
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            font-variant-numeric: tabular-nums;
             font-size: 15px;
             font-weight: 700;
             width: 100%;
@@ -550,7 +551,8 @@ if ($sheet_id === 0) {
             background-color: var(--sheet-header-bg);
             color: var(--text-muted);
             text-align: center;
-            font-family: 'JetBrains Mono', monospace;
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            font-variant-numeric: tabular-nums;
             font-size: 11px;
             font-weight: 600;
             position: sticky;
@@ -573,7 +575,9 @@ if ($sheet_id === 0) {
         }
 
         .mono {
-            font-family: 'JetBrains Mono', monospace;
+            font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            font-variant-numeric: tabular-nums;
+            font-feature-settings: "tnum" 1;
         }
 
         .scanned-input {
@@ -582,7 +586,8 @@ if ($sheet_id === 0) {
             border: 1px solid #0969da;
             background-color: #f0f7ff;
             border-radius: 4px;
-            font-family: 'JetBrains Mono', monospace;
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            font-variant-numeric: tabular-nums;
             font-weight: 700;
             text-align: center;
             font-size: 14px;
