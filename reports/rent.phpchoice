@@ -1,0 +1,404 @@
+<script type="text/javascript" src="datepick_js.js"></script>
+<link rel="stylesheet" type="text/css" href="date_css.css"  />
+<script>
+var isCtrl = false;
+document.onkeyup=function(e){
+	if(e.which == 17) isCtrl=false;
+}
+document.onkeydown=function(e){
+	if(e.which == 17) isCtrl=true;
+	if(e.which == 66 && isCtrl == true) {
+		document.getElementById("barcode").focus(); 
+		return false;
+	}
+	
+}
+/////////////////
+function formSubmit()
+{
+if(document.getElementById('bill_date').value=="")
+ {
+alert("Please Select Bill Date to continue.");
+document.getElementById('bill_date').focus();
+return false;
+}
+else{
+
+document.getElementById("frm1").submit();
+ return true;
+ }
+
+}
+
+var searchReq = getXMLHttp();
+function getXMLHttp()
+{
+
+  var xmlHttp
+
+// alert("hi1");
+
+  try
+
+  {
+
+    //Firefox, Opera 8.0+, Safari
+
+    xmlHttp = new XMLHttpRequest();
+
+  }
+
+  catch(e)
+
+  {
+
+    //Internet Explorer
+
+    try
+
+    {
+
+      xmlHttp = new ActiveXObject("Msxml2.XMLHTTP");
+
+    }
+
+    catch(e)
+
+    {
+
+      try
+
+      {
+
+        xmlHttp = new ActiveXObject("Microsoft.XMLHTTP");
+
+      }
+
+      catch(e)
+
+      {
+
+        alert("Your browser does not support AJAX!")
+
+        return false;
+
+      }
+
+    }
+
+  }
+
+  return xmlHttp;
+
+}
+
+
+function MakeRequest()
+
+{
+
+  var xmlHttp = getXMLHttp();
+
+// alert("hi");
+
+  xmlHttp.onreadystatechange = function()
+
+  {
+
+    if(xmlHttp.readyState == 4)
+
+    {
+
+      HandleResponse(xmlHttp.responseText);
+
+    }
+
+  }
+
+// alert("hi2");
+
+
+
+var str = escape(document.getElementById('barcode').value);
+//alert(str);
+ xmlHttp.open("GET", "getbarcode.php?barcode="+str, false);
+
+  xmlHttp.send(null);
+
+}
+function HandleResponse(response)
+
+{
+//alert(response);
+var ni =document.getElementById('detail');
+
+var numi = document.getElementById('theValue');
+var num = parseInt(document.getElementById('theValue').value) +1;
+numi.value = num;
+
+var newdiv = document.createElement('div');
+
+var divIdName = num;
+
+newdiv.setAttribute('id',divIdName);
+
+newdiv.innerHTML =response+"<table border='0' height='80' valign='top'><tr><td valign='top'><a href=\"javascript:;\" onclick=\"removeElement(\'" + divIdName + "\')\">Delete</a></td></tr></table>";
+ni.appendChild(newdiv);
+
+
+document.getElementById('barcode').value='';
+}
+
+	
+////remove div
+	 function removeElement(divNum) {
+	 
+            var d = document.getElementById('detail');
+            var olddiv = document.getElementById(divNum);
+            d.removeChild(olddiv);
+        }
+
+function ch(){
+if(frm1.pick[0].checked==true)
+{
+ ///alert("hi");
+
+document.getElementById('cust_pick').disabled=false;
+document.getElementById('compick_date').disabled=true;
+
+}
+ if(frm1.pick[1].checked==true)
+{ //alert("hi11");
+
+	document.getElementById('compick_date').disabled=false;
+	document.getElementById('cust_pick').disabled=true;
+}
+}
+function ch1(){
+if(frm1.del[0].checked==true)
+{
+
+
+document.getElementById('cust_del').disabled=false;
+document.getElementById('comdel_date').disabled=true;
+
+}
+ if(frm1.del[1].checked==true)
+{ 
+
+	document.getElementById('comdel_date').disabled=false;
+	document.getElementById('cust_del').disabled=true;
+}
+}
+
+
+function checkTotal() {
+        document.listForm.total.value = '';
+        var sum = 0;
+		 var arr = document.getElementsByClassName('amt');
+     
+    //var tot=0;
+	///alert(arr.length);
+        for (i=0;i<arr.length;i++) {
+       
+      
+            sum = sum + Number(arr[i].value);
+         
+        }
+        document.listForm.total.value = sum;
+    }
+    
+///
+function checkTotal1() {
+       
+   	
+     var arr = document.getElementsByClassName('prz');
+     var discount = document.getElementsByClassName('discount');
+     var amt= document.getElementsByClassName('amt');
+ 
+    
+        for (i=0;i<arr.length;i++) {
+       
+
+         alert( amt[i].value=Number(arr[i].value) - Number(discount[i].value));
+       alert(amt[i].value);
+        }
+        ///document.listForm.total.value = sum;
+    }
+</script>
+
+<div id="page_title" style="margin-bottom:8px;"><?php echo $title ?></div>
+
+
+
+
+
+<div id="page_subtitle" style="margin-bottom:8px;"><?php echo $subtitle ?></div>
+<div style="text-align: center;">
+<a href="../../../index.php/reports">Back</a>
+<table width="1096" height="300" border="1" cellpadding="4" cellspacing="0" bgcolor="#FFFFFF"  align="center">
+  
+<tr>
+<td align="center">  <?php
+include('config.php');
+          $result5=mysql_query("select * from `phppos_app_config`");
+$row5 = mysql_fetch_array($result5);
+mysql_data_seek($result5,1);
+$row6=mysql_fetch_array($result5);
+mysql_data_seek($result5,10);
+
+$row7=mysql_fetch_array($result5);
+
+?>
+<b><?php echo $row6[1]; ?></b><br><?php echo $row5[1]; ?><br/><?php echo $row7[1]; ?><br/><br/>
+<b>CONFIRMATION MEMO</b>
+
+</td></tr>
+<tr>
+<td width="1084"  valign="top">
+      
+     <center>
+      <form name="listForm" action="order_detail.php"  method="POST">
+       <br/>
+       
+       <table width="1079" height="83"><tr>
+       <td width="145" height="36"><strong>Customer Pick-Up :</strong></td><td width="48"> <input name="pick" id="pick" type="radio"  onClick="ch();" value="Customer"></td>
+       <td width="343"><strong>Customer Pick-Up Date :</strong><input type="text" name="cust_pick" id="cust_pick" onClick="displayDatePicker('cust_pick');" /></td>  
+       <td width="162"> <strong>Company Delivery :</strong></td><td width="23"><input name="del" id="del2" type="radio" value="Company Delivery"  onClick="ch1();" ></td>
+       <td width="330" ><strong>Company Delivery Date: </strong>
+         <input type="text" name="comdel_date" id="comdel_date" onClick="displayDatePicker('comdel_date');"/></td></tr>
+    <tr>
+      <td height="39"><strong>Customer Return :</strong></td><td><input name="del" id="del" type="radio" value="Customer Return"  onClick="ch1();" ></td>
+      <td><strong>Customer Return Date :    </strong>
+        <input type="text" name="cust_del" id="cust_del"  onClick="displayDatePicker('cust_del');"/></td>
+<td width="162"><strong>Company Pick-Up :</strong></td><td width="23"><input name="pick" id="pick2" type="radio" onClick="ch();" value="Company "></td>
+       <td><strong>Company Pick-Up Date :</strong>
+         <input type="text" name="compick_date" id="compick_date" onClick="displayDatePicker('compick_date');"/></td></tr></table>
+      
+       <center>
+       <hr>
+       <table width="1007" height="77"><tr><td width="344" height="34">
+         <strong>Customer Name:&nbsp;</strong>&nbsp;&nbsp;
+  <select name="cid" id="cid">
+    <option value="-1" >select</option>
+    <?php 
+	  include('config.php');
+	  $result = mysql_query("SELECT * FROM  phppos_people order by first_name");
+	  while($row = mysql_fetch_row($result)){ 
+	  ?>
+    <option value="<?php echo $row[11]; ?>" ><?php echo $row[0] ."  ". $row[1]; ?></option>
+    <?php } ?>
+  </select></td>
+ 
+  <td width="338">
+
+  <strong>2nd Person's Name:</strong>
+    <input type="text" name="pname" id="pname" />  
+    <input type="hidden" name="myvar" value="0" id="theValue" /></td>
+     <td width="309"><strong>Through Name:</strong>    <input type="text" name="name" onfocus="" onclick=""  id="name" /></td>
+  </tr>
+  <tr>
+    <td width="344" height="35" ><strong>Bill  Date :</strong>
+      <input type="text" name="bill_date" id="bill_date" onClick="displayDatePicker('bill_date');"/></td>
+      <td><strong>2nd Contact No. :</strong>          <input type="text" name="pcontact" id="pcontact" /></td>
+      <td><strong>Through Phone No:</strong>        <input type="text" name="tphone" id="tphone" /></td>
+  </table>
+       </center>
+      <hr>
+      <table width="696"><tr><td width="96"> <strong> Commission : </strong></td><td width="280"><input type="radio" name="commis" id="commis" value="Rs."  checked="checked"/>
+        <label for="radio">Rs.
+          <input type="radio" name="commis" id="commis" value="%" />
+          %<br/>
+          <input type="text"  name="comm" id="comm"  value="0"/>
+        </label></td><td width="304"><strong>Item code: </strong>
+         <input type="text" name="barcode" onfocus="this.value=''" onclick="this.value=''"  id="barcode" onchange="MakeRequest();"/>
+  </td></tr></table>
+    <hr>
+     
+       <table width="1085" border="1" cellpadding="4" cellspacing="0">
+         <tr>
+    <td width='103'><U><strong>Item Code</strong></U></td>
+    <td width='144'><U><strong>Category</strong></U></td>
+    <td width='182'><U><strong>Price</strong></U></td>
+    <td width='250'><U><strong>Rent</strong></U></td>
+    <td width='250'><U><strong>Discount</strong></U></td>
+    <td width='250'><U><strong>Amount</strong></U></td>
+     <td width='234'><U><strong>Deposit</strong></U></td>
+    <td width='96'><U><strong>Delete</strong></U></td>
+  </tr>
+  <tr><td colspan="8">
+ <div id="detail"></div>
+
+     </td></tr>
+  </table><br/>
+      <table width="966" height="29"><tr>
+      <td width="46"><strong>Rent:-</strong></td>
+      <td width="153"><p>
+        <input type="radio" name="rentpaid" id="rentpaid" value="Paid">
+        <strong>        Paid Amount</strong><br/>
+        <input type="radio" name="rentpaid" id="rentpaid" value="Unpaid">
+        <strong>       Unpaid Amount      
+        </strong><br/>
+           <input type="radio" name="rentpaid" id="rentpaid" value="Balance">
+           <strong>Balance Amount
+           </strong></td>
+        <td width="78"><strong>Deposit :-</strong></td>
+        <td width="94"><strong>
+          <input type="radio" name="paid" id="paid" value="Paid">
+          Paid
+      <br/>
+           <input type="radio" name="paid" id="paid2" value="Unpaid">
+           Unpaid </strong></td>
+        
+        
+        <td width="269"><strong>Amount Paid : </strong>&nbsp;
+          <input type="text" name="pamount" id="pamount" value="">
+		<td width="298"><strong>Total Amount : </strong><input type="text" size="10" name="total" value="0"/></td>
+        </tr></table>
+      <br/>
+ <input type="button" onclick="formSubmit()" value="Rent Bill" />
+</form></center>
+ </td></tr>
+ 
+ </table>
+	
+
+	
+</div>
+<div align="center">You are using Point Of Sale Version 10.5 .</div>
+
+ <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+<script>
+///////////Assets
+    $(document).ready(function(){
+// alert("h");
+        //iterate through each textboxes and add keyup
+        //handler to trigger sum event
+        $(".txt").each(function() {
+ 
+            $(this).keyup(function(){
+                calculateSum();
+            });
+        });
+ 
+    });
+ 
+    function calculateSum() {
+ 
+        var sum = 0;
+        //iterate through each textboxes and add the values
+        $(".txt").each(function() {
+ 
+            //add only if the value is number
+            if(!isNaN(this.value) && this.value.length!=0) {
+                sum += parseFloat(this.value);
+                
+            }
+ 
+        });
+        //.toFixed() method will roundoff the final sum to 2 decimal places
+     $("#total").val(sum.toFixed(2));
+    }
+    
+  ////////end
+</script>

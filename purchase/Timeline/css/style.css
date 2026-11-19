@@ -1,0 +1,178 @@
+* {
+	margin: 0;
+	padding: 0;
+}
+
+body {
+	
+	font-family: Georgia, serif;
+	color: #000;
+	font-size: 14px;
+    background: #fff;
+}
+
+a {
+	color: #000;
+	text-decoration: none;
+	-webkit-transition: 0.5s;
+	-moz-transition: 0.5s;
+	-o-transition: 0.5s;
+	-ms-transition: 0.5s;
+	transition: 0.5s;
+}
+	a:hover,
+	a.selected {
+		color: #ac0404;
+	}
+
+h1,h2,h4,h5,h6 {
+	text-align: center;
+	color: #ac0404;
+	text-shadow:#ac0404 1px 1px 2px;
+	margin-bottom: 5px;
+	
+}
+	h1 {
+		font-size: 24px;
+	}
+	h2 {
+		font-size: 14px;
+	}
+.sociales {
+	text-align: center;
+	margin-bottom: 20px;
+}
+
+	#timeline {
+		width:   900px;
+		height: 2000px;
+		overflow: hidden;
+		margin: 10px auto;
+		position: relative;
+		background:#F0FFF0;
+	}
+		#dates {
+			width: 900px;
+			height: 60px;
+			overflow: hidden;
+			
+		}
+			#dates li {
+				list-style: none;
+				float: left;
+				width: 170px;
+				height: 50px;
+				font-size: 18px;
+				text-align: center;
+				background: url('../images/biggerdot.png') center bottom no-repeat;
+			}
+				#dates a {
+					line-height: 38px;
+					padding-bottom: 10px;
+				}
+				#dates .selected {
+			        font-size: 18px;
+				}
+		
+		#issues {
+			width:   900px;
+			height: 2000px;
+			overflow: hidden;
+		}	
+			#issues li {
+				width:  900px;
+				height: 350px;
+				list-style: none;
+				float: left;
+			}
+				#issues li.selected img {
+					-webkit-transform: scale(1.1,1.1);
+					-moz-transform: scale(1.1,1.1);
+				    -o-transform: scale(1.1,1.1);
+				    -ms-transform: scale(1.1,1.1);
+				    transform: scale(1.1,1.1);
+				}
+				#issues li img {
+					float: left;
+					margin: 10px 30px 10px 50px;
+					background: transparent;
+					-ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr=#00FFFFFF,endColorstr=#00FFFFFF)"; /* IE 8 */   
+					filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#00FFFFFF,endColorstr=#00FFFFFF);/* IE 6 & 7 */      
+					zoom: 1;
+					-webkit-transition: all 2s ease-in-out;
+					-moz-transition: all 2s ease-in-out;
+					-o-transition: all 2s ease-in-out;
+					-ms-transition: all 2s ease-in-out; 
+					transition: all 2s ease-in-out;
+					-webkit-transform: scale(0.7,0.7);
+					-moz-transform: scale(0.7,0.7);
+				    -o-transform: scale(0.7,0.7);
+				    -ms-transform: scale(0.7,0.7);
+				    transform: scale(0.7,0.7);
+				}
+				#issues li h1 {
+					color: #ac0404;
+					font-size: 48px;
+					margin: 20px 0;
+					text-shadow: #000 1px 1px 2px;
+				}
+				#issues li p {
+					font-size: 14px;
+					margin-right: 70px;
+					font-weight: lighter;
+					line-height: 27px;
+					color:#000;
+			        padding-left:100px;
+					font-family:Gadget, sans-serif;
+					
+					/*border:thin solid; 
+					width:800px;
+					text-shadow: #000 1px 1px 2px;*/
+				}
+		
+		#grad_left,
+		#grad_right {
+			width: 100px;
+			height: 900px;
+			position: absolute;
+			top: 0;
+		}
+			#grad_left {
+		        left: 0;
+		        background: url('../image/grad_left.png') repeat-y;
+				/*background-color:#00a4ae;*/
+			}
+			#grad_right {
+		        right: 0;
+		        background: url('../image/grad_right.png') repeat-y;
+			}
+		
+		#next,
+		#prev {
+			position: absolute;
+			top: 0;
+			font-size: 70px;
+			top: 170px;
+			width: 22px;
+			height: 38px;
+			background-position: 0 0;
+			background-repeat: no-repeat;
+			text-indent: -9999px;
+			overflow: hidden;
+		}
+			#next:hover,
+			#prev:hover {
+				background-position: 0 -76px;
+			}
+			#next {
+				right: 0;
+				background-image: url('../images/next.png');
+			}
+			#prev {
+				left: 0;
+				background-image: url('../images/prev.png');
+			}
+				#next.disabled,
+				#prev.disabled {
+					opacity: 0.2;
+				}

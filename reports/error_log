@@ -1,0 +1,91 @@
+[26-Mar-2018 11:35:41 UTC] PHP Warning:  mysql_query(): Access denied for user 'sarmicrosystems'@'localhost' (using password: NO) in /home/sarmicrosystems/public_html/srishringarr/application/views/reports/nottest.php on line 8
+[26-Mar-2018 11:35:41 UTC] PHP Warning:  mysql_query(): A link to the server could not be established in /home/sarmicrosystems/public_html/srishringarr/application/views/reports/nottest.php on line 8
+[26-Mar-2018 11:35:41 UTC] PHP Warning:  mysql_fetch_array() expects parameter 1 to be resource, boolean given in /home/sarmicrosystems/public_html/srishringarr/application/views/reports/nottest.php on line 17
+[26-Mar-2018 11:36:03 UTC] PHP Warning:  mysql_query(): Access denied for user 'sarmicrosystems'@'localhost' (using password: NO) in /home/sarmicrosystems/public_html/srishringarr/application/views/reports/nottest.php on line 8
+[26-Mar-2018 11:36:03 UTC] PHP Warning:  mysql_query(): A link to the server could not be established in /home/sarmicrosystems/public_html/srishringarr/application/views/reports/nottest.php on line 8
+[26-Mar-2018 11:36:03 UTC] PHP Warning:  mysql_fetch_array() expects parameter 1 to be resource, boolean given in /home/sarmicrosystems/public_html/srishringarr/application/views/reports/nottest.php on line 17
+[26-May-2018 12:28:53 UTC] PHP Warning:  mysql_query(): Access denied for user 'sarmicrosystems'@'localhost' (using password: NO) in /home/sarmicrosystems/public_html/srishringarr/application/views/reports/view_updateReport.php on line 8
+[26-May-2018 12:28:53 UTC] PHP Warning:  mysql_query(): A link to the server could not be established in /home/sarmicrosystems/public_html/srishringarr/application/views/reports/view_updateReport.php on line 8
+[26-May-2018 12:28:53 UTC] PHP Warning:  mysql_fetch_row() expects parameter 1 to be resource, boolean given in /home/sarmicrosystems/public_html/srishringarr/application/views/reports/view_updateReport.php on line 9
+[26-May-2018 12:28:53 UTC] PHP Warning:  mysql_query(): Access denied for user 'sarmicrosystems'@'localhost' (using password: NO) in /home/sarmicrosystems/public_html/srishringarr/application/views/reports/view_updateReport.php on line 18
+[26-May-2018 12:28:53 UTC] PHP Warning:  mysql_query(): A link to the server could not be established in /home/sarmicrosystems/public_html/srishringarr/application/views/reports/view_updateReport.php on line 18
+[26-May-2018 12:28:53 UTC] PHP Warning:  mysql_fetch_row() expects parameter 1 to be resource, boolean given in /home/sarmicrosystems/public_html/srishringarr/application/views/reports/view_updateReport.php on line 19
+[28-May-2018 06:14:01 UTC] PHP Warning:  mysql_query(): Access denied for user 'sarmicrosystems'@'localhost' (using password: NO) in /home/sarmicrosystems/public_html/srishringarr/application/views/reports/view_updateReport.php on line 8
+[28-May-2018 06:14:01 UTC] PHP Warning:  mysql_query(): A link to the server could not be established in /home/sarmicrosystems/public_html/srishringarr/application/views/reports/view_updateReport.php on line 8
+[28-May-2018 06:14:01 UTC] PHP Warning:  mysql_fetch_row() expects parameter 1 to be resource, boolean given in /home/sarmicrosystems/public_html/srishringarr/application/views/reports/view_updateReport.php on line 9
+[28-May-2018 06:14:01 UTC] PHP Warning:  mysql_query(): Access denied for user 'sarmicrosystems'@'localhost' (using password: NO) in /home/sarmicrosystems/public_html/srishringarr/application/views/reports/view_updateReport.php on line 18
+[28-May-2018 06:14:01 UTC] PHP Warning:  mysql_query(): A link to the server could not be established in /home/sarmicrosystems/public_html/srishringarr/application/views/reports/view_updateReport.php on line 18
+[28-May-2018 06:14:01 UTC] PHP Warning:  mysql_fetch_row() expects parameter 1 to be resource, boolean given in /home/sarmicrosystems/public_html/srishringarr/application/views/reports/view_updateReport.php on line 19
+[28-May-2018 06:17:12 UTC] PHP Warning:  mysql_query(): Access denied for user 'sarmicrosystems'@'localhost' (using password: NO) in /home/sarmicrosystems/public_html/srishringarr/application/views/reports/view_updateReport.php on line 8
+[28-May-2018 06:17:12 UTC] PHP Warning:  mysql_query(): A link to the server could not be established in /home/sarmicrosystems/public_html/srishringarr/application/views/reports/view_updateReport.php on line 8
+[28-May-2018 06:17:12 UTC] PHP Warning:  mysql_fetch_row() expects parameter 1 to be resource, boolean given in /home/sarmicrosystems/public_html/srishringarr/application/views/reports/view_updateReport.php on line 9
+[28-May-2018 06:17:12 UTC] PHP Warning:  mysql_query(): Access denied for user 'sarmicrosystems'@'localhost' (using password: NO) in /home/sarmicrosystems/public_html/srishringarr/application/views/reports/view_updateReport.php on line 18
+[28-May-2018 06:17:12 UTC] PHP Warning:  mysql_query(): A link to the server could not be established in /home/sarmicrosystems/public_html/srishringarr/application/views/reports/view_updateReport.php on line 18
+[28-May-2018 06:17:12 UTC] PHP Warning:  mysql_fetch_row() expects parameter 1 to be resource, boolean given in /home/sarmicrosystems/public_html/srishringarr/application/views/reports/view_updateReport.php on line 19
+[28-May-2018 06:19:37 UTC] PHP Warning:  mysql_query(): Access denied for user 'sarmicrosystems'@'localhost' (using password: NO) in /home/sarmicrosystems/public_html/srishringarr/application/views/reports/view_updateReport.php on line 8
+[28-May-2018 06:19:37 UTC] PHP Warning:  mysql_query(): A link to the server could not be established in /home/sarmicrosystems/public_html/srishringarr/application/views/reports/view_updateReport.php on line 8
+[28-May-2018 06:19:37 UTC] PHP Warning:  mysql_fetch_row() expects parameter 1 to be resource, boolean given in /home/sarmicrosystems/public_html/srishringarr/application/views/reports/view_updateReport.php on line 9
+[28-May-2018 06:19:37 UTC] PHP Warning:  mysql_query(): Access denied for user 'sarmicrosystems'@'localhost' (using password: NO) in /home/sarmicrosystems/public_html/srishringarr/application/views/reports/view_updateReport.php on line 18
+[28-May-2018 06:19:37 UTC] PHP Warning:  mysql_query(): A link to the server could not be established in /home/sarmicrosystems/public_html/srishringarr/application/views/reports/view_updateReport.php on line 18
+[28-May-2018 06:19:37 UTC] PHP Warning:  mysql_fetch_row() expects parameter 1 to be resource, boolean given in /home/sarmicrosystems/public_html/srishringarr/application/views/reports/view_updateReport.php on line 19
+[28-May-2018 06:19:52 UTC] PHP Warning:  mysql_query(): Access denied for user 'sarmicrosystems'@'localhost' (using password: NO) in /home/sarmicrosystems/public_html/srishringarr/application/views/reports/view_updateReport.php on line 8
+[28-May-2018 06:19:52 UTC] PHP Warning:  mysql_query(): A link to the server could not be established in /home/sarmicrosystems/public_html/srishringarr/application/views/reports/view_updateReport.php on line 8
+[28-May-2018 06:19:52 UTC] PHP Warning:  mysql_fetch_row() expects parameter 1 to be resource, boolean given in /home/sarmicrosystems/public_html/srishringarr/application/views/reports/view_updateReport.php on line 9
+[28-May-2018 06:19:52 UTC] PHP Warning:  mysql_query(): Access denied for user 'sarmicrosystems'@'localhost' (using password: NO) in /home/sarmicrosystems/public_html/srishringarr/application/views/reports/view_updateReport.php on line 18
+[28-May-2018 06:19:52 UTC] PHP Warning:  mysql_query(): A link to the server could not be established in /home/sarmicrosystems/public_html/srishringarr/application/views/reports/view_updateReport.php on line 18
+[28-May-2018 06:19:52 UTC] PHP Warning:  mysql_fetch_row() expects parameter 1 to be resource, boolean given in /home/sarmicrosystems/public_html/srishringarr/application/views/reports/view_updateReport.php on line 19
+[28-May-2018 06:22:40 UTC] PHP Warning:  mysql_query(): Access denied for user 'sarmicrosystems'@'localhost' (using password: NO) in /home/sarmicrosystems/public_html/srishringarr/application/views/reports/view_updateReport.php on line 8
+[28-May-2018 06:22:40 UTC] PHP Warning:  mysql_query(): A link to the server could not be established in /home/sarmicrosystems/public_html/srishringarr/application/views/reports/view_updateReport.php on line 8
+[28-May-2018 06:22:40 UTC] PHP Warning:  mysql_fetch_row() expects parameter 1 to be resource, boolean given in /home/sarmicrosystems/public_html/srishringarr/application/views/reports/view_updateReport.php on line 9
+[28-May-2018 06:22:40 UTC] PHP Warning:  mysql_query(): Access denied for user 'sarmicrosystems'@'localhost' (using password: NO) in /home/sarmicrosystems/public_html/srishringarr/application/views/reports/view_updateReport.php on line 18
+[28-May-2018 06:22:40 UTC] PHP Warning:  mysql_query(): A link to the server could not be established in /home/sarmicrosystems/public_html/srishringarr/application/views/reports/view_updateReport.php on line 18
+[28-May-2018 06:22:40 UTC] PHP Warning:  mysql_fetch_row() expects parameter 1 to be resource, boolean given in /home/sarmicrosystems/public_html/srishringarr/application/views/reports/view_updateReport.php on line 19
+[29-May-2018 07:06:13 UTC] PHP Warning:  Unknown: Input variables exceeded 1000. To increase the limit change max_input_vars in php.ini. in Unknown on line 0
+[29-May-2018 07:23:48 UTC] PHP Warning:  Unknown: Input variables exceeded 1000. To increase the limit change max_input_vars in php.ini. in Unknown on line 0
+[29-May-2018 12:25:50 UTC] PHP Warning:  Unknown: Input variables exceeded 1000. To increase the limit change max_input_vars in php.ini. in Unknown on line 0
+[29-May-2018 12:27:30 UTC] PHP Warning:  Unknown: Input variables exceeded 1000. To increase the limit change max_input_vars in php.ini. in Unknown on line 0
+[29-May-2018 12:32:23 UTC] PHP Warning:  Unknown: Input variables exceeded 1000. To increase the limit change max_input_vars in php.ini. in Unknown on line 0
+[18-May-2020 10:48:21 UTC] PHP Warning:  Unknown: Input variables exceeded 1000. To increase the limit change max_input_vars in php.ini. in Unknown on line 0
+[18-May-2020 10:50:09 UTC] PHP Warning:  Unknown: Input variables exceeded 1000. To increase the limit change max_input_vars in php.ini. in Unknown on line 0
+[19-May-2020 10:55:09 UTC] PHP Warning:  Unknown: Input variables exceeded 1000. To increase the limit change max_input_vars in php.ini. in Unknown on line 0
+[19-May-2020 10:59:16 UTC] PHP Warning:  Unknown: Input variables exceeded 1000. To increase the limit change max_input_vars in php.ini. in Unknown on line 0
+[08-Jun-2020 10:34:43 UTC] PHP Warning:  Unknown: Input variables exceeded 1000. To increase the limit change max_input_vars in php.ini. in Unknown on line 0
+[08-Jun-2020 10:36:44 UTC] PHP Warning:  Unknown: Input variables exceeded 1000. To increase the limit change max_input_vars in php.ini. in Unknown on line 0
+[10-Jun-2020 10:59:51 UTC] PHP Warning:  Unknown: Input variables exceeded 1000. To increase the limit change max_input_vars in php.ini. in Unknown on line 0
+[22-Jul-2020 11:10:19 UTC] PHP Warning:  Unknown: Input variables exceeded 1000. To increase the limit change max_input_vars in php.ini. in Unknown on line 0
+[31-Jul-2020 10:27:57 UTC] PHP Warning:  Unknown: Input variables exceeded 1000. To increase the limit change max_input_vars in php.ini. in Unknown on line 0
+[31-Jul-2020 11:05:38 UTC] PHP Warning:  Unknown: Input variables exceeded 1000. To increase the limit change max_input_vars in php.ini. in Unknown on line 0
+[01-Aug-2020 10:10:48 UTC] PHP Warning:  Unknown: Input variables exceeded 1000. To increase the limit change max_input_vars in php.ini. in Unknown on line 0
+[01-Aug-2020 10:12:02 UTC] PHP Warning:  Unknown: Input variables exceeded 1000. To increase the limit change max_input_vars in php.ini. in Unknown on line 0
+[01-Aug-2020 10:30:32 UTC] PHP Warning:  Unknown: Input variables exceeded 1000. To increase the limit change max_input_vars in php.ini. in Unknown on line 0
+[01-Aug-2020 11:08:50 UTC] PHP Warning:  Unknown: Input variables exceeded 1000. To increase the limit change max_input_vars in php.ini. in Unknown on line 0
+[01-Aug-2020 11:10:16 UTC] PHP Warning:  Unknown: Input variables exceeded 1000. To increase the limit change max_input_vars in php.ini. in Unknown on line 0
+[07-Aug-2020 09:53:56 UTC] PHP Warning:  Unknown: Input variables exceeded 1000. To increase the limit change max_input_vars in php.ini. in Unknown on line 0
+[07-Aug-2020 09:57:19 UTC] PHP Warning:  Unknown: Input variables exceeded 1000. To increase the limit change max_input_vars in php.ini. in Unknown on line 0
+[28-Nov-2020 10:11:43 UTC] PHP Warning:  Unknown: Input variables exceeded 1000. To increase the limit change max_input_vars in php.ini. in Unknown on line 0
+[04-Jan-2021 01:40:41 America/Chicago] PHP Warning:  mysql_connect(): Access denied for user 'sarmicro_pos'@'localhost' (using password: YES) in /home/avoservice/public_html/srishringarr/application/views/reports/config.php on line 6
+[04-Jan-2021 03:51:50 America/Chicago] PHP Warning:  mysql_connect(): Access denied for user 'sarmicro_pos'@'localhost' (using password: YES) in /home/avoservice/public_html/srishringarr/application/views/reports/config.php on line 6
+[05-Feb-2021 07:06:48 America/Chicago] PHP Warning:  Unknown: Input variables exceeded 1000. To increase the limit change max_input_vars in php.ini. in Unknown on line 0
+[05-Feb-2021 07:09:57 America/Chicago] PHP Warning:  Unknown: Input variables exceeded 1000. To increase the limit change max_input_vars in php.ini. in Unknown on line 0
+[05-Feb-2021 07:15:28 America/Chicago] PHP Warning:  Unknown: Input variables exceeded 1000. To increase the limit change max_input_vars in php.ini. in Unknown on line 0
+[05-Feb-2021 07:16:25 America/Chicago] PHP Warning:  Unknown: Input variables exceeded 1000. To increase the limit change max_input_vars in php.ini. in Unknown on line 0
+[05-Feb-2021 07:20:50 America/Chicago] PHP Warning:  Unknown: Input variables exceeded 1000. To increase the limit change max_input_vars in php.ini. in Unknown on line 0
+[05-Feb-2021 07:24:47 America/Chicago] PHP Warning:  Unknown: Input variables exceeded 1000. To increase the limit change max_input_vars in php.ini. in Unknown on line 0
+[05-Feb-2021 07:25:20 America/Chicago] PHP Warning:  Unknown: Input variables exceeded 1000. To increase the limit change max_input_vars in php.ini. in Unknown on line 0
+[05-Feb-2021 07:38:52 America/Chicago] PHP Warning:  Unknown: Input variables exceeded 1000. To increase the limit change max_input_vars in php.ini. in Unknown on line 0
+[06-Feb-2021 23:39:17 America/Chicago] PHP Warning:  Unknown: Input variables exceeded 1000. To increase the limit change max_input_vars in php.ini. in Unknown on line 0
+[07-Feb-2021 01:38:48 America/Chicago] PHP Warning:  Unknown: Input variables exceeded 1000. To increase the limit change max_input_vars in php.ini. in Unknown on line 0
+[07-Feb-2021 01:40:51 America/Chicago] PHP Warning:  Unknown: Input variables exceeded 1000. To increase the limit change max_input_vars in php.ini. in Unknown on line 0
+[07-Feb-2021 01:41:01 America/Chicago] PHP Warning:  Unknown: Input variables exceeded 1000. To increase the limit change max_input_vars in php.ini. in Unknown on line 0
+[07-Feb-2021 01:41:11 America/Chicago] PHP Warning:  Unknown: Input variables exceeded 1000. To increase the limit change max_input_vars in php.ini. in Unknown on line 0
+[07-Feb-2021 01:47:08 America/Chicago] PHP Warning:  Unknown: Input variables exceeded 1000. To increase the limit change max_input_vars in php.ini. in Unknown on line 0
+[07-Feb-2021 01:47:15 America/Chicago] PHP Warning:  Unknown: Input variables exceeded 1000. To increase the limit change max_input_vars in php.ini. in Unknown on line 0
+[07-Feb-2021 01:48:18 America/Chicago] PHP Warning:  Unknown: Input variables exceeded 1000. To increase the limit change max_input_vars in php.ini. in Unknown on line 0
+[07-Feb-2021 01:48:27 America/Chicago] PHP Warning:  Unknown: Input variables exceeded 1000. To increase the limit change max_input_vars in php.ini. in Unknown on line 0
+[07-Feb-2021 01:51:12 America/Chicago] PHP Warning:  Unknown: Input variables exceeded 1000. To increase the limit change max_input_vars in php.ini. in Unknown on line 0
+[07-Feb-2021 01:51:24 America/Chicago] PHP Warning:  Unknown: Input variables exceeded 1000. To increase the limit change max_input_vars in php.ini. in Unknown on line 0
+[07-Feb-2021 01:54:28 America/Chicago] PHP Warning:  Unknown: Input variables exceeded 1000. To increase the limit change max_input_vars in php.ini. in Unknown on line 0
+[07-Feb-2021 01:55:02 America/Chicago] PHP Warning:  Unknown: Input variables exceeded 1000. To increase the limit change max_input_vars in php.ini. in Unknown on line 0
+[07-Feb-2021 01:55:11 America/Chicago] PHP Warning:  Unknown: Input variables exceeded 1000. To increase the limit change max_input_vars in php.ini. in Unknown on line 0
+[07-Feb-2021 01:55:30 America/Chicago] PHP Warning:  Unknown: Input variables exceeded 1000. To increase the limit change max_input_vars in php.ini. in Unknown on line 0
+[07-Feb-2021 01:55:45 America/Chicago] PHP Warning:  Unknown: Input variables exceeded 1000. To increase the limit change max_input_vars in php.ini. in Unknown on line 0
