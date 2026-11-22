@@ -1,14 +1,28 @@
 <?php 
 // ini_set('session.save_path', '/home/srishringarr/sessions'); 
-            
-            // session_start();
-            include("db_connection.php");
-         
-            if($_SESSION['username']){ }else{ ?>
-                <script>
-                     window.location.href="/pos/login.php";
-                </script>
-            <?php } ?>
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
+if (!function_exists('OpenSrishringarrCon')) {
+    if (file_exists(__DIR__ . '/db_connection.php')) {
+        include_once(__DIR__ . '/db_connection.php');
+    } elseif (file_exists(__DIR__ . '/../db_connection.php')) {
+        include_once(__DIR__ . '/../db_connection.php');
+    }
+}
+
+if (!isset($con) || !$con || !($con instanceof mysqli)) {
+    if (function_exists('OpenSrishringarrCon')) {
+        $con = OpenSrishringarrCon();
+    }
+}
+
+if (!empty($_SESSION['username'])) { } else { ?>
+    <script>
+         window.location.href="/pos/login.php";
+    </script>
+<?php } ?>
 
 <!DOCTYPE html>
 <html lang="en">

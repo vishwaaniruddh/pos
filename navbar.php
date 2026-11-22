@@ -1,49 +1,54 @@
 <?php 
 
-// ini_set('display_errors', 1);
-// ini_set('display_startup_errors', 1);
-// error_reporting(E_ALL);
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 
-if ($_SESSION['userid']) {
+if (!isset($con) || !$con || !($con instanceof mysqli)) {
+    if (!function_exists('OpenSrishringarrCon')) {
+        if (file_exists(__DIR__ . '/db_connection.php')) {
+            include_once(__DIR__ . '/db_connection.php');
+        } elseif (file_exists(__DIR__ . '/../db_connection.php')) {
+            include_once(__DIR__ . '/../db_connection.php');
+        }
+    }
+    if (function_exists('OpenSrishringarrCon')) {
+        $con = OpenSrishringarrCon();
+    }
+}
 
+if (!empty($_SESSION['userid'])) {
 
-$base_url = 'https://srishringarr.com/pos/';
+    $is_local = (php_sapi_name() === 'cli' || !isset($_SERVER['HTTP_HOST']) || in_array($_SERVER['HTTP_HOST'], ['localhost', '127.0.0.1', '::1']) || strpos($_SERVER['HTTP_HOST'], 'localhost:') === 0);
+    $base_url = $is_local ? '/pos/' : 'https://srishringarr.com/pos/';
 
-    $id = $_SESSION['userid'];
-
+    $id = intval($_SESSION['userid']);
 
     $user = "select * from loginusers where id=" . $id;
     $usersql = mysqli_query($con, $user);
-    $usersql_result = mysqli_fetch_assoc($usersql);
+    $usersql_result = ($usersql && mysqli_num_rows($usersql) > 0) ? mysqli_fetch_assoc($usersql) : [];
 
-
-
-
-    $permission = $usersql_result['permission'];
-    $permission = explode(',', $permission);
+    $permission_str = !empty($usersql_result['permission']) ? $usersql_result['permission'] : '';
+    $permission = array_filter(explode(',', $permission_str));
     sort($permission);
 
-    $cpermission = json_encode($permission);
-    $cpermission = str_replace(array('[', ']', '"'), '', $cpermission);
-    $cpermission = explode(',', $cpermission);
-    $cpermission = "'" . implode("', '", $cpermission) . "'";
     $mainmenu = [];
-    foreach ($permission as $key => $val) {
-        $sub_menu_sql = mysqli_query($con, "select * from sub_menu where id='" . $val . "' and status=1");
+    if (!empty($permission)) {
+        $cpermission = "'" . implode("', '", array_map('intval', $permission)) . "'";
+        foreach ($permission as $key => $val) {
+            $val = intval($val);
+            $sub_menu_sql = mysqli_query($con, "select * from sub_menu where id='" . $val . "' and status=1");
 
-        if (mysqli_num_rows($sub_menu_sql) > 0) {
-            $sub_menu_sql_result = mysqli_fetch_assoc($sub_menu_sql);
-            $mainmenu[] = $sub_menu_sql_result['main_menu'];
+            if ($sub_menu_sql && mysqli_num_rows($sub_menu_sql) > 0) {
+                $sub_menu_sql_result = mysqli_fetch_assoc($sub_menu_sql);
+                $mainmenu[] = $sub_menu_sql_result['main_menu'];
+            }
         }
+    } else {
+        $cpermission = "0";
     }
     $mainmenu = array_unique($mainmenu);
     sort($mainmenu);
-
-
-
-
-
-
     ?>
 
 
@@ -60,7 +65,8 @@ $base_url = 'https://srishringarr.com/pos/';
                          <?php 
             foreach ($mainmenu as $menu => $menu_id) {
                 
-                $menu_sql = mysqli_query($con, "select * from main_menu where id='" . $menu_id . "' and status=1");
+                $menu_sql = mysqli_query($con, "select * from main_menu where id='" . intval($menu_id) . "' and status=1");
+                if (!$menu_sql || mysqli_num_rows($menu_sql) == 0) continue;
                 $menu_sql_result = mysqli_fetch_assoc($menu_sql);
                 $main_name = $menu_sql_result['name'];
                 $targetDiv = str_replace(' ', '', $main_name);
@@ -116,8 +122,9 @@ $base_url = 'https://srishringarr.com/pos/';
                     <div class="collapse" id="<?php echo  $targetDiv; ?>">
                         <ul class="nav flex-column sub-menu">
                             <?php 
-                            $submenu_sql = mysqli_query($con, "select * from sub_menu where main_menu = '" . $menu_id . "' and id in ($cpermission) and status=1 order by sub_menu asc");
-                            while ($submenu_sql_result = mysqli_fetch_assoc($submenu_sql)) {
+                            $submenu_sql = mysqli_query($con, "select * from sub_menu where main_menu = '" . intval($menu_id) . "' and id in ($cpermission) and status=1 order by sub_menu asc");
+                            if ($submenu_sql) {
+                                while ($submenu_sql_result = mysqli_fetch_assoc($submenu_sql)) {
                                 
                                 $page = $submenu_sql_result['page'] ;
                                 $submenu_name = $submenu_sql_result['sub_menu'];
@@ -144,6 +151,7 @@ $base_url = 'https://srishringarr.com/pos/';
                                     </a>
                                 </li>
                                 <?php
+                                }
                             }
                             ?>
                         </ul>
