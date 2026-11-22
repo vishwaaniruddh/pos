@@ -20,7 +20,7 @@ if (!isset($con) || !$con || !($con instanceof mysqli)) {
 if (!empty($_SESSION['userid'])) {
 
     $is_local = (php_sapi_name() === 'cli' || !isset($_SERVER['HTTP_HOST']) || in_array($_SERVER['HTTP_HOST'], ['localhost', '127.0.0.1', '::1']) || strpos($_SERVER['HTTP_HOST'], 'localhost:') === 0);
-    $base_url = $is_local ? '/pos/' : 'https://srishringarr.com/pos/';
+    $base_url = function_exists('get_pos_base_url') ? get_pos_base_url() : ($is_local ? '/ss/pos/' : 'https://srishringarr.com/pos/');
 
     $id = intval($_SESSION['userid']);
 
@@ -168,7 +168,7 @@ if (!empty($_SESSION['userid'])) {
 						
                  
 						<li class="nav-item icons-list">
-                            <a class="nav-link" href="/pos/logout.php">
+                            <a class="nav-link" href="<?php echo $base_url; ?>logout.php">
                                 <i class="fa fa-sign-out-alt menu-icon">
                                 </i>
                                 <span class="menu-title">

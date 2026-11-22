@@ -53,7 +53,7 @@ input{ width:180px;}
 <center>
 
 <h1>Edit Itemcode </h1>
-<a href="/pos/reports/itemcode_details.php" style="font-size:18px;font-weight:bold;">Back</a>
+<a href="itemcode_details.php" style="font-size:18px;font-weight:bold;">Back</a>
 
 <form method="post" action="ItemCodeEdit_process.php">
 <table>

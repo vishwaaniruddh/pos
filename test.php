@@ -25,7 +25,7 @@ mysqli_field_count($con);
 	</script> 
 	<title>ItemCode List-1</title>
 	<font size="+1"><center>
-<a href="/pos/home_dashboard.php" style="font-size:18px;font-weight:bold;">Back</a>&nbsp;&nbsp;&nbsp;<a href="#" style="font-size:18px;font-weight:bold;" onclick='PrintDiv();'>Print</a></center></font>
+<a href="home_dashboard.php" style="font-size:18px;font-weight:bold;">Back</a>&nbsp;&nbsp;&nbsp;<a href="#" style="font-size:18px;font-weight:bold;" onclick='PrintDiv();'>Print</a></center></font>
 	<div style="text-align: center;" id="bill">
 		<table align="center">
 			<tr>
@@ -77,8 +77,8 @@ mysqli_field_count($con);
 								</td>
 								
 								<td width="78">
-									<a href="/pos/itemcode_delete.php?id=<?php echo $row[9]; ?>" onclick="return confirm('Are you sure??')" style="font-size:18px;font-weight:bold;">Delete</a>&nbsp;&nbsp;&nbsp;
-									<br/> <a href="/pos/itemcode_edit.php?id=<?php echo $row[9]; ?>" target="_new" style="font-size:18px;font-weight:bold;">Edit</a></td>
+									<a href="itemcode_delete.php?id=<?php echo $row[9]; ?>" onclick="return confirm('Are you sure??')" style="font-size:18px;font-weight:bold;">Delete</a>&nbsp;&nbsp;&nbsp;
+									<br/> <a href="itemcode_edit.php?id=<?php echo $row[9]; ?>" target="_new" style="font-size:18px;font-weight:bold;">Edit</a></td>
 							</tr>
 							<?php $i++;   } ?>
 					</table>

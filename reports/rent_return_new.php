@@ -1,5 +1,6 @@
 <?php
-$dir = 'https://srishringarr.com/pos/';
+include_once(__DIR__ . '/../db_connection.php');
+$dir = function_exists('get_pos_base_url') ? get_pos_base_url() : '/ss/pos/';
 include('../top-header.php');?>
 
      <?php include('../top-navbar.php');?>
@@ -114,28 +115,28 @@ include('../top-header.php');?>
 </div> 
 <!-- container-scroller -->
 <!-- plugins:js -->
-<script src= "/pos/vendors/js/vendor.bundle.base.js"></script>
-<script src="/pos/vendors/js/vendor.bundle.addons.js"></script>
+<script src= "<?php echo $dir; ?>vendors/js/vendor.bundle.base.js"></script>
+<script src="<?php echo $dir; ?>vendors/js/vendor.bundle.addons.js"></script>
 <!-- endinject -->
 <!-- Plugin js for this page-->
 <!-- End plugin js for this page-->
 <!-- inject:js -->
-<script src="/pos/js/off-canvas.js">
+<script src="<?php echo $dir; ?>js/off-canvas.js">
 </script>
-<script src="/pos/js/hoverable-collapse.js">
+<script src="<?php echo $dir; ?>js/hoverable-collapse.js">
 </script>
-<script src="/pos/js/misc.js">
+<script src="<?php echo $dir; ?>js/misc.js">
 </script>
-<script src="/pos/js/settings.js">
+<script src="<?php echo $dir; ?>js/settings.js">
 </script>
-<script src="/pos/js/todolist.js"></script>
+<script src="<?php echo $dir; ?>js/todolist.js"></script>
 
 <!-- End custom js for this page-->
 <!-- video.js -->
-<!--<script src="/pos/js/data-table.js"></script>
-<script src="/pos/js/data-table2.js"></script>-->
-<!--<script src="/pos/js/typeahead.js"></script>-->
-<script src="/pos/js/select2.js"></script>
+<!--<script src="<?php echo $dir; ?>js/data-table.js"></script>
+<script src="<?php echo $dir; ?>js/data-table2.js"></script>-->
+<!--<script src="<?php echo $dir; ?>js/typeahead.js"></script>-->
+<script src="<?php echo $dir; ?>js/select2.js"></script>
 <script type="text/javascript" src="js/rent_return.js"></script>            
 </body>
 </html>
