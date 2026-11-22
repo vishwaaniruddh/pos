@@ -5,10 +5,12 @@
 // error_reporting(E_ALL);
 
 
-include('db_connection.php') ; 
- $con = OpenSrishringarrCon();
+include_once __DIR__ . '/db_connection.php'; 
+$con = OpenSrishringarrCon();
 
-require "./vendor/autoload.php";
+if (file_exists(__DIR__ . "/vendor/autoload.php")) {
+    require_once __DIR__ . "/vendor/autoload.php";
+}
 use \Firebase\JWT\JWT;
 
 
