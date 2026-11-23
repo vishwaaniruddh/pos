@@ -128,7 +128,10 @@ $delivery = $sql_result['delivery'];
     
     <form method="POST" action="./updateRentBillDetails.php">
         <input type="hidden" name="bill_id" value="<?php echo $bill_id; ?>" />
-        <h2>Invoice Number: <?php echo $bill_id; ?></h2>
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 15px;">
+            <h2 style="margin:0;">Invoice Number: <?php echo $bill_id; ?></h2>
+            <a href="./editrent123.php?bill_id=<?php echo $bill_id; ?>" style="background:#0f172a; color:#fff; padding:8px 16px; border-radius:6px; text-decoration:none; font-size:13px; font-weight:600;">Open Full Rent Form (editrent123) &rarr;</a>
+        </div>
         
         <!-- Grid Layout for Bill and Item Details -->
         <div class="grid">
