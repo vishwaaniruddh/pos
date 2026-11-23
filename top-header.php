@@ -18,7 +18,13 @@ if (!isset($con) || !$con || !($con instanceof mysqli)) {
     }
 }
 
-$pos_base_url = function_exists('get_pos_base_url') ? get_pos_base_url() : '/ss/pos/';
+if (file_exists(__DIR__ . '/base_url.php')) {
+    include_once __DIR__ . '/base_url.php';
+} elseif (file_exists(__DIR__ . '/../base_url.php')) {
+    include_once __DIR__ . '/../base_url.php';
+}
+
+$pos_base_url = function_exists('get_pos_base_url') ? get_pos_base_url() : '/pos/';
 if (!empty($_SESSION['username'])) { } else { ?>
     <script>
          window.location.href="<?php echo $pos_base_url; ?>login.php";

@@ -1,4 +1,9 @@
 <?php
+if (file_exists(__DIR__ . '/base_url.php')) {
+    include_once __DIR__ . '/base_url.php';
+} elseif (file_exists(__DIR__ . '/../base_url.php')) {
+    include_once __DIR__ . '/../base_url.php';
+}
 if (!function_exists('get_pos_asset_url')) {
     if (file_exists(__DIR__ . '/db_connection.php')) {
         include_once __DIR__ . '/db_connection.php';
@@ -6,7 +11,7 @@ if (!function_exists('get_pos_asset_url')) {
         include_once __DIR__ . '/../db_connection.php';
     }
 }
-$pos_asset_url = function_exists('get_pos_asset_url') ? get_pos_asset_url() : '/ss/pos/';
+$pos_asset_url = function_exists('get_pos_asset_url') ? get_pos_asset_url() : '/pos/';
 ?>
 
 <head>

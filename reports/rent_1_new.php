@@ -1,6 +1,9 @@
 <?php
+if (file_exists(__DIR__ . '/../base_url.php')) {
+    include_once __DIR__ . '/../base_url.php';
+}
 include_once(__DIR__ . '/../db_connection.php');
-$dir = function_exists('get_pos_base_url') ? get_pos_base_url() : '/ss/pos/';
+$dir = function_exists('get_pos_base_url') ? get_pos_base_url() : '/pos/';
 include('../top-header.php');?>
 
   <?php include('../top-navbar.php');?>

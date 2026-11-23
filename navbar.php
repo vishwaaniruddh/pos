@@ -19,8 +19,14 @@ if (!isset($con) || !$con || !($con instanceof mysqli)) {
 
 if (!empty($_SESSION['userid'])) {
 
+    if (file_exists(__DIR__ . '/base_url.php')) {
+        include_once __DIR__ . '/base_url.php';
+    } elseif (file_exists(__DIR__ . '/../base_url.php')) {
+        include_once __DIR__ . '/../base_url.php';
+    }
+
     $is_local = (php_sapi_name() === 'cli' || !isset($_SERVER['HTTP_HOST']) || in_array($_SERVER['HTTP_HOST'], ['localhost', '127.0.0.1', '::1']) || strpos($_SERVER['HTTP_HOST'], 'localhost:') === 0);
-    $base_url = function_exists('get_pos_base_url') ? get_pos_base_url() : ($is_local ? '/ss/pos/' : 'https://srishringarr.com/pos/');
+    $base_url = function_exists('get_pos_base_url') ? get_pos_base_url() : ($is_local ? '/ss/pos/' : '/pos/');
 
     $id = intval($_SESSION['userid']);
 
