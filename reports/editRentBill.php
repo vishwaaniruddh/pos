@@ -196,10 +196,8 @@ $result = $stmt->get_result();
                         |
                         <a href="./rent_report_detail.php?id=<?php echo $row['bill_id']; ?>" target="_blank">View Bill</a>
                         |
-                        <a href="./editrentbillDetails.php?bill_id=<?php echo $row['bill_id']; ?>" style="color: #64748b; font-size: 12px;">Quick Edit</a>
-                        |
                         <button class="btn btn-danger delete_bill" data-bill-id="<?php echo $row['bill_id']; ?>" >Delete</button>
-                        </td>
+                    </td>
                     <td><?php echo $row['bill_date']; ?></td>
                     <td>
                         <?php 
