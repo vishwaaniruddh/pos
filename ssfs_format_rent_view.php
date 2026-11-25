@@ -19,9 +19,9 @@ $limit = 20;
 $offset = ($page - 1) * $limit;
 
 // Base query
-$query = "SELECT pr.bill_id, pr.bill_date, pr.rent_amount,pr.new_bill_number,
+$query = "SELECT pr.bill_id, pr.bill_date, pr.rent_amount, pr.amount, pr.bal_amount, pr.new_bill_number,
            IFNULL(CONCAT(pp.first_name, ' ', pp.last_name), '-') AS customer_name,
-           pr.card_perc
+           pr.card_perc, pr.payment_mode_name, pr.pstatus
     FROM phppos_rent pr   
     LEFT JOIN phppos_people pp ON pr.cust_id = pp.person_id
     WHERE 1=1";
@@ -118,15 +118,36 @@ while ($bill = mysqli_fetch_assoc($rent_sql)):
     $totalSGST = 0;
     $new_bill_number = $bill['new_bill_number'];
     
-    $mode_status = ($bill['card_perc'] == 0) ? "Cash" : (($bill['card_perc'] == 1) ? "Cheque" : "Card");
+    $default_mode = !empty($bill['payment_mode_name']) && trim($bill['payment_mode_name']) !== ''
+        ? trim($bill['payment_mode_name'])
+        : (($bill['card_perc'] == 1) ? 'Bank' : (($bill['card_perc'] == 2) ? 'Card' : 'Cash'));
 
-    $payment_mode_sql = mysqli_query($con, "SELECT payment_by, amount FROM rent_amount WHERE bill_id = '$bill_id'");
+    $payment_mode_sql = mysqli_query($con, "SELECT payment_by, amount FROM rent_amount WHERE bill_id = '$bill_id' ORDER BY id ASC");
     $payment_modes = [];
     $payment_amounts = [];
     while ($payment_row = mysqli_fetch_assoc($payment_mode_sql)) {
-        $payment_modes[] = '₹ ' . $payment_row['payment_by'];
-        $payment_amounts[] = '₹ ' .$payment_row['amount'];
+        $p_mode = !empty($payment_row['payment_by']) && trim($payment_row['payment_by']) !== ''
+            ? trim($payment_row['payment_by'])
+            : $default_mode;
+
+        $payment_modes[] = $p_mode;
+        if (isset($payment_row['amount']) && $payment_row['amount'] !== '') {
+            $amt_val = floatval($payment_row['amount']);
+            $formatted_amt = ($amt_val == intval($amt_val)) ? number_format($amt_val, 0) : number_format($amt_val, 2);
+            $payment_amounts[] = '₹ ' . $formatted_amt;
+        }
     }
+
+    // Fallback to phppos_rent if no entries found in rent_amount table
+    if (empty($payment_modes) && empty($payment_amounts)) {
+        $paid_val = floatval($bill['bal_amount'] > 0 ? $bill['bal_amount'] : ($bill['rent_amount'] > 0 ? $bill['rent_amount'] : $bill['amount']));
+        if ($paid_val > 0) {
+            $payment_modes[] = $default_mode;
+            $formatted_amt = ($paid_val == intval($paid_val)) ? number_format($paid_val, 0) : number_format($paid_val, 2);
+            $payment_amounts[] = '₹ ' . $formatted_amt;
+        }
+    }
+
     $payment_by_mode_str = !empty($payment_modes) ? implode(', ', $payment_modes) : "NA";
     $payment_amount_str = !empty($payment_amounts) ? implode(', ', $payment_amounts) : "NA";
     ?>
@@ -209,7 +230,7 @@ while ($bill = mysqli_fetch_assoc($rent_sql)):
         $totalCGST += $cgst;
         $totalSGST += $sgst;
         
-        if (str_contains(strtolower($sku), strtolower($_REQUEST['sku'])) && $_REQUEST['sku'] ) {
+        if (!empty($sku) && str_contains(strtolower($order['sku']), strtolower($sku))) {
             $skuFound = true;
         } else {
             $skuFound = false;
