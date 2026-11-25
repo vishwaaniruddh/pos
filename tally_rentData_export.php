@@ -39,9 +39,9 @@ $where_sql = (!empty($where_conditions)) ? "WHERE " . implode(" AND ", $where_co
 
 // Fetch Parent Records
 $rent_sql = mysqli_query($con, "
-    SELECT pr.bill_id, pr.bill_date, pr.rent_amount, pr.amount, pr.bal_amount, pr.new_bill_number,
+    SELECT pr.bill_id, pr.bill_date, pr.rent_amount,pr.new_bill_number,
            IFNULL(CONCAT(pp.first_name, ' ', pp.last_name), '-') AS customer_name,
-           pr.card_perc, pr.payment_mode_name, pr.pstatus
+           pr.card_perc
     FROM phppos_rent pr   
     LEFT JOIN phppos_people pp ON pr.cust_id = pp.person_id
     $where_sql
@@ -79,37 +79,22 @@ while ($bill = mysqli_fetch_assoc($rent_sql)) {
     $new_bill_id = ($new_bill_number ? $new_bill_number : $bill_id) ; 
     
     
-    // Determine Payment Mode & Fetch Payment Details
-    $default_mode = !empty($bill['payment_mode_name']) && trim($bill['payment_mode_name']) !== ''
-        ? trim($bill['payment_mode_name'])
-        : (($bill['card_perc'] == 1) ? 'Bank' : (($bill['card_perc'] == 2) ? 'Card' : 'Cash'));
+    // Determine Payment Mode
+    $mode = $bill['card_perc'];
+    $mode_status = ($mode == 0) ? "Cash" : (($mode == 1) ? "Cheque" : (($mode == 2) ? "Card" : "NA"));
 
+    // Fetch Payment Details
     $payment_by_mode_ar = [];
     $payment_amount_ar = [];
 
-    $payment_mode_sql = mysqli_query($con, "SELECT payment_by, amount FROM rent_amount WHERE bill_id = '$bill_id' ORDER BY id ASC");
+    $payment_mode_sql = mysqli_query($con, "SELECT * FROM rent_amount WHERE bill_id = '$bill_id'");
     while ($payment_mode = mysqli_fetch_assoc($payment_mode_sql)) {
-        $p_mode = !empty($payment_mode['payment_by']) && trim($payment_mode['payment_by']) !== ''
-            ? trim($payment_mode['payment_by'])
-            : $default_mode;
-        $payment_by_mode_ar[] = $p_mode;
-        if (isset($payment_mode['amount']) && $payment_mode['amount'] !== '') {
-            $amt_val = floatval($payment_mode['amount']);
-            $payment_amount_ar[] = ($amt_val == intval($amt_val)) ? number_format($amt_val, 0) : number_format($amt_val, 2);
-        }
+        $payment_by_mode_ar[] = $payment_mode['payment_by'];
+        $payment_amount_ar[] = $payment_mode['amount'];
     }
 
-    // Fallback if no entries found in rent_amount table
-    if (empty($payment_by_mode_ar) && empty($payment_amount_ar)) {
-        $paid_val = floatval($bill['bal_amount'] > 0 ? $bill['bal_amount'] : ($bill['rent_amount'] > 0 ? $bill['rent_amount'] : $bill['amount']));
-        if ($paid_val > 0) {
-            $payment_by_mode_ar[] = $default_mode;
-            $payment_amount_ar[] = ($paid_val == intval($paid_val)) ? number_format($paid_val, 0) : number_format($paid_val, 2);
-        }
-    }
-
-    $payment_by_mode_str = !empty($payment_by_mode_ar) ? implode(', ', $payment_by_mode_ar) : "NA";
-    $payment_amount_str = !empty($payment_amount_ar) ? implode(', ', $payment_amount_ar) : "NA";
+    $payment_by_mode_str = !empty($payment_by_mode_ar) ? implode(',', $payment_by_mode_ar) : "NA";
+    $payment_amount_str = !empty($payment_amount_ar) ? implode(',', $payment_amount_ar) : "NA";
 
     // Fetch Child Records (Order Details)
     $order_query = "
