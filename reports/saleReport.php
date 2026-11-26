@@ -78,16 +78,18 @@ xmlhttp.onreadystatechange=function()
 		alert("No such Phone Number"); 
 		else{
 		document.getElementById("cid").value=s1[1];
-		MakeRequest();
+		if (typeof MakeRequest === 'function') {
+			MakeRequest();
+		}
 		}
 		//document.getElementById("").value=s1[];
     //document.getElementById("myDiv").innerHTML=xmlhttp.responseText;
 
     }
   }
-   var str=document.getElementById('phoneNo').value;
+   var str=document.getElementById('phoneNo').value.trim();
    //alert(str);
-   xmlhttp.open("GET","getbyphone.php?cid="+str,true);
+   xmlhttp.open("GET","getbyphone.php?cid="+encodeURIComponent(str),true);
    xmlhttp.send();
 }
 </script>
@@ -116,7 +118,7 @@ xmlhttp.onreadystatechange=function()
        <td width="269" ><strong>To Date: </strong>
          <input type="text" name="to_date"  value="<?php echo $_REQUEST['to_date']; ?>" id="to_date" onClick="displayDatePicker('to_date');"/></td><td width="324" height="34">
          
-         <strong> Phone Number:</strong> <input type="text" name="phoneNo" id="phoneNo" value=""  /> <a href="#" onClick="loadPhoneNo();">Find</a>
+         <strong> Phone Number:</strong> <input type="text" name="phoneNo" id="phoneNo" value=""  /> <a href="javascript:void(0);" onClick="loadPhoneNo(); return false;">Find</a>
          
          <strong>Invoice Number:</strong> <input type="text" name="invno" id="invno" value=""  /> 
          <br />
@@ -193,10 +195,10 @@ if(isset($s)){
    
    
    
-   if($_GET["invno"]!="")
+   if(!empty($_GET["invno"]))
    {
-       
-     $qry.=" and bill_id='".$_GET["invno"]."'";  
+     $escInv = mysqli_real_escape_string($con, trim((string)$_GET["invno"]));
+     $qry.=" and (bill_id='".$escInv."' or new_bill_number='".$escInv."')";
    }
 //   echo  $qry;
    

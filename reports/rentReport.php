@@ -39,12 +39,14 @@ $ba = 0;
                     alert("No such Phone Number");
                 } else {
                     document.getElementById("cid").value = s1[1];
-                    MakeRequest();
+                    if (typeof MakeRequest === 'function') {
+                        MakeRequest();
+                    }
                 }
             }
         }
-        var str = document.getElementById('phoneNo').value;
-        xmlhttp.open("GET", "getbyphone.php?cid=" + str, true);
+        var str = document.getElementById('phoneNo').value.trim();
+        xmlhttp.open("GET", "getbyphone.php?cid=" + encodeURIComponent(str), true);
         xmlhttp.send();
     }
 </script>

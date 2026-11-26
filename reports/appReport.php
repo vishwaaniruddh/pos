@@ -92,9 +92,9 @@ else{
 	    }
     }
 }
-   var str=document.getElementById('phoneNo').value;
+   var str=document.getElementById('phoneNo').value.trim();
    //alert(str);
-   xmlhttp.open("GET","getbyphone.php?cid="+str,true);
+   xmlhttp.open("GET","getbyphone.php?cid="+encodeURIComponent(str),true);
    xmlhttp.send();
 }
 
