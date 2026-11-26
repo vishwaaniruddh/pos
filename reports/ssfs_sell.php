@@ -693,6 +693,19 @@ if ($d > 0) {
   if ($t1 && $t2 && $t3 && $t4) {
     // 	mysqli_query($con,"COMMIT;");
     mysqli_commit($con);
+
+    require_once __DIR__ . '/../includes/yn_stock_sync.php';
+    $ynSyncItems = [];
+    for ($idx = 0; $idx < $d; $idx++) {
+        $skuSold = trim((string)($design[$idx] ?? ''));
+        $qtySold = (int)($prz[$idx] ?? 0);
+        if ($skuSold !== '' && $qtySold > 0) {
+            $ynSyncItems[] = ['sku' => $skuSold, 'delta_qty' => -$qtySold];
+        }
+    }
+    if (!empty($ynSyncItems)) {
+        sync_pos_items_to_yn($con, $ynSyncItems, '', 0, "POS bill {$full_invoice} created");
+    }
     
     
     

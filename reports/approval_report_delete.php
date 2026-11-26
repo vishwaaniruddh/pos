@@ -4,7 +4,8 @@ if (session_status() === PHP_SESSION_NONE) {
 }
 header('Content-Type: application/json');
 
-include('../db_connection.php');
+include(__DIR__ . '/../db_connection.php');
+require_once __DIR__ . '/../includes/yn_stock_sync.php';
 $con = OpenSrishringarrCon();
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && (isset($_POST['bill_id']) || isset($_GET['bill_id']))) {
@@ -129,13 +130,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && (isset($_POST['bill_id']) || isset(
         }
 
         // 2. Restore item stock in phppos_items
+        $ynSyncItems = [];
         foreach ($items as $item) {
-            $item_sku = $item['item_id'] ?? '';
+            $item_sku = trim((string)($item['item_id'] ?? ''));
             $item_qty = (int)($item['qty'] ?? 0);
-            if ($item_sku !== '' && $item_qty > 0) {
-                $stock_stmt = $con->prepare("UPDATE phppos_items SET quantity = quantity + ? WHERE name = ?");
-                $stock_stmt->bind_param("is", $item_qty, $item_sku);
+            $return_qty = (int)($item['return_qty'] ?? 0);
+            $restore_qty = max(0, $item_qty - $return_qty);
+            if ($item_sku !== '' && $restore_qty > 0) {
+                $stock_stmt = $con->prepare("UPDATE phppos_items SET quantity = quantity + ? WHERE name = ? OR item_number = ?");
+                $stock_stmt->bind_param("iss", $restore_qty, $item_sku, $item_sku);
                 $stock_stmt->execute();
+                $ynSyncItems[] = ['sku' => $item_sku, 'delta_qty' => $restore_qty];
             }
         }
 
@@ -161,10 +166,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && (isset($_POST['bill_id']) || isset(
         // Commit transaction
         mysqli_commit($con);
 
+        // 6. Revert item quantities in YN (web2) website database and purge cache
+        $yn_sync = sync_pos_items_to_yn($con, $ynSyncItems, $new_bill_number ?: (string)$bill_id, $bill_id, $delete_reason);
+        $ynCount = count($yn_sync['updated_products'] ?? []);
+        $ynSuffix = $ynCount > 0 ? " Web2 YN stock reverted for {$ynCount} product(s)." : "";
+
         http_response_code(200);
         echo json_encode([
             "status" => "success",
-            "message" => "Approval bill (" . ($new_bill_number ?: $bill_id) . ") deleted and safely archived to audit log."
+            "message" => "Bill (" . ($new_bill_number ?: $bill_id) . ") deleted, POS stock restored, and safely archived to audit log.{$ynSuffix}",
+            "yn_sync" => $yn_sync
         ]);
 
     } catch (Exception $e) {

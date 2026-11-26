@@ -3,6 +3,7 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 include('../db_connection.php');
+require_once __DIR__ . '/../includes/yn_stock_sync.php';
 $con = OpenSrishringarrCon();
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -47,6 +48,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $item_amounts = $_POST['item_amount'] ?? [];
         $delete_item_aids = $_POST['delete_item_aid'] ?? [];
 
+        $ynSyncItems = [];
         foreach ($item_aids as $idx => $raw_aid) {
             $aid = (int)$raw_aid;
             $sku = trim($item_skus[$idx] ?? '');
@@ -60,9 +62,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if (in_array((string)$aid, array_map('strval', $delete_item_aids))) {
                 // Restore stock back into phppos_items
                 if ($sku !== '' && $old_qty > 0) {
-                    $stock_restore = $con->prepare("UPDATE phppos_items SET quantity = quantity + ? WHERE name = ?");
-                    $stock_restore->bind_param("is", $old_qty, $sku);
+                    $stock_restore = $con->prepare("UPDATE phppos_items SET quantity = quantity + ? WHERE name = ? OR item_number = ?");
+                    $stock_restore->bind_param("iss", $old_qty, $sku, $sku);
                     $stock_restore->execute();
+                    $ynSyncItems[] = ['sku' => $sku, 'delta_qty' => $old_qty];
                 }
 
                 // Delete line item
@@ -74,9 +77,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $qty_diff = $new_qty - $old_qty;
                 if ($qty_diff !== 0 && $sku !== '') {
                     // If increased, deduct stock; if decreased, add stock
-                    $stock_adj = $con->prepare("UPDATE phppos_items SET quantity = quantity - ? WHERE name = ?");
-                    $stock_adj->bind_param("is", $qty_diff, $sku);
+                    $stock_adj = $con->prepare("UPDATE phppos_items SET quantity = quantity - ? WHERE name = ? OR item_number = ?");
+                    $stock_adj->bind_param("iss", $qty_diff, $sku, $sku);
                     $stock_adj->execute();
+                    $ynSyncItems[] = ['sku' => $sku, 'delta_qty' => -$qty_diff];
                 }
 
                 // Update line item details
@@ -97,6 +101,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $upd_pay->execute();
 
         mysqli_commit($con);
+        if (!empty($ynSyncItems)) {
+            sync_pos_items_to_yn($con, $ynSyncItems, '', 0, 'Edited POS bill item quantities');
+        }
         header("Location: ./editApprovalBillDetails.php?bill_id=" . urlencode($bill_id) . "&status=success&msg=" . urlencode("Bill #{$bill_id} details updated successfully."));
         exit;
 
