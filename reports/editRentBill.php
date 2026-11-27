@@ -817,8 +817,61 @@ include_once(__DIR__ . '/../top-navbar.php');
     <!-- main-panel ends -->
 </div>
 <!-- page-body-wrapper ends -->
+</div>
+<!-- container-scroller ends -->
+
+<!-- plugins:js -->
+<script src="<?php echo $pos_asset_url; ?>vendors/js/vendor.bundle.base.js"></script>
+<script src="<?php echo $pos_asset_url; ?>vendors/js/vendor.bundle.addons.js"></script>
+<!-- inject:js -->
+<script src="<?php echo $pos_asset_url; ?>js/off-canvas.js"></script>
+<script src="<?php echo $pos_asset_url; ?>js/hoverable-collapse.js"></script>
+<script src="<?php echo $pos_asset_url; ?>js/misc.js"></script>
+<script src="<?php echo $pos_asset_url; ?>js/settings.js"></script>
+<script src="<?php echo $pos_asset_url; ?>js/todolist.js"></script>
 
 <script>
+// Sidebar Accordion & Collapse Toggle Handler
+document.addEventListener("DOMContentLoaded", function () {
+    // If Reports submenu exists, ensure it is open on this page
+    var currentSub = document.getElementById("Reports");
+    if (currentSub && !currentSub.classList.contains("show")) {
+        currentSub.classList.add("show");
+        var parentLink = document.querySelector('a[href="#Reports"], a[data-target="#Reports"]');
+        if (parentLink) parentLink.setAttribute("aria-expanded", "true");
+    }
+
+    // Direct click handler for all collapse toggles in sidebar
+    document.querySelectorAll('#sidebar a[data-toggle="collapse"]').forEach(function (toggle) {
+        toggle.addEventListener("click", function (e) {
+            e.preventDefault();
+            var targetSelector = this.getAttribute("href") || this.getAttribute("data-target");
+            if (targetSelector && targetSelector.startsWith("#")) {
+                var target = document.querySelector(targetSelector);
+                if (target) {
+                    var isExpanded = target.classList.contains("show");
+                    // Close other open submenus in sidebar
+                    document.querySelectorAll("#sidebar .collapse.show").forEach(function (sub) {
+                        if (sub !== target) {
+                            sub.classList.remove("show");
+                            var parentLink = sub.closest(".nav-item") ? sub.closest(".nav-item").querySelector('a[data-toggle="collapse"]') : null;
+                            if (parentLink) parentLink.setAttribute("aria-expanded", "false");
+                        }
+                    });
+                    // Toggle current submenu
+                    if (isExpanded) {
+                        target.classList.remove("show");
+                        this.setAttribute("aria-expanded", "false");
+                    } else {
+                        target.classList.add("show");
+                        this.setAttribute("aria-expanded", "true");
+                    }
+                }
+            }
+        });
+    });
+});
+
 document.querySelectorAll(".delete_bill_btn").forEach(button => {
     button.addEventListener("click", function () {
         const billId = this.getAttribute("data-bill-id");
