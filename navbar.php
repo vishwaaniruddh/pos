@@ -192,4 +192,27 @@ if (!empty($_SESSION['userid'])) {
     input,select{
         border:1px solid black !important;
     }
+    #sidebar.sidebar, .sidebar-offcanvas {
+        overflow-y: auto !important;
+        overflow-x: hidden !important;
+        max-height: calc(100vh - 58px) !important;
+        -webkit-overflow-scrolling: touch;
+    }
+    #sidebar .nav, .sidebar .nav {
+        overflow: visible !important;
+        padding-bottom: 90px !important;
+    }
+    #sidebar::-webkit-scrollbar, .sidebar::-webkit-scrollbar {
+        width: 5px;
+    }
+    #sidebar::-webkit-scrollbar-track, .sidebar::-webkit-scrollbar-track {
+        background: transparent;
+    }
+    #sidebar::-webkit-scrollbar-thumb, .sidebar::-webkit-scrollbar-thumb {
+        background: #cbd5e1;
+        border-radius: 4px;
+    }
+    #sidebar::-webkit-scrollbar-thumb:hover, .sidebar::-webkit-scrollbar-thumb:hover {
+        background: #94a3b8;
+    }
 </style>
