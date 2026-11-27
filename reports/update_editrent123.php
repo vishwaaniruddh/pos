@@ -132,7 +132,7 @@ try {
     $comm_amt_int = (int)$comm;
 
     $upd_stmt->bind_param(
-        "issssssiisssssssssssdssssssi",
+        "issssssissssssssssssisddssssi",
         $cid, $bill_date, $pick, $del, $throught, $rentpaid,
         $bal_str, $rent_amt_int, $amt_str, $pick_date, $del_date,
         $paid, $trail_date, $measurement, $measurement_note, $delivery_select,
@@ -230,7 +230,7 @@ try {
     $ra_res = $check_ra->get_result();
     if ($ra_row = $ra_res->fetch_assoc()) {
         $upd_ra = $con->prepare("UPDATE rent_amount SET amount = ?, payment_by = ?, return_date = ?, cust_id = ? WHERE id = ?");
-        $upd_ra->bind_param("issii", $pamount, $pay_By, $bill_date, $cid, $ra_row['id']);
+        $upd_ra->bind_param("dssii", $pamount, $pay_By, $bill_date, $cid, $ra_row['id']);
         $upd_ra->execute();
     } elseif ($pamount > 0) {
         $ins_ra = $con->prepare("INSERT INTO rent_amount (cust_id, amount, return_date, payment_by, bill_id) VALUES (?, ?, ?, ?, ?)");
@@ -253,7 +253,7 @@ try {
         $cust_full_name = trim(($cust_row['first_name'] ?? '') . ' ' . ($cust_row['last_name'] ?? ''));
         $memo = "rent payment from customer " . $cust_full_name;
 
-        $ins_bt = $con->prepare("INSERT INTO bank_transaction (trans_id, bank_id, trans_type, trans_amt, trans_date, trans_memo, reconcile, enrty_date, company_name, bill_id) VALUES ('', ?, 'receit', ?, ?, ?, 'NO', NOW(), ?, ?)");
+        $ins_bt = $con->prepare("INSERT INTO bank_transaction (bank_id, trans_type, trans_amt, trans_date, trans_memo, reconcile, enrty_date, company_name, bill_id) VALUES (?, 'receit', ?, ?, ?, 'NO', NOW(), ?, ?)");
         $ins_bt->bind_param("idsssi", $acc, $pamount, $bill_date, $memo, $company_name, $bill_id);
         $ins_bt->execute();
     }
@@ -262,8 +262,10 @@ try {
     header("Location: editrent123.php?bill_id=" . urlencode($bill_id) . "&status=success&msg=" . urlencode("Rent bill #" . ($new_bill_number ? $new_bill_number : $bill_id) . " updated successfully!"));
     exit;
 
-} catch (Exception $e) {
-    mysqli_rollback($con);
+} catch (Throwable $e) {
+    if ($con && mysqli_ping($con)) {
+        mysqli_rollback($con);
+    }
     header("Location: editrent123.php?bill_id=" . urlencode($bill_id) . "&status=error&msg=" . urlencode($e->getMessage()));
     exit;
 }
