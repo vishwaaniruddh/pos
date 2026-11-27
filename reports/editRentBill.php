@@ -133,6 +133,7 @@ include_once(__DIR__ . '/../top-navbar.php');
             r.amount,
             r.bal_amount,
             r.booking_status,
+            r.pstatus,
             r.pick_date,
             r.delivery_date,
             p.first_name, 
@@ -140,7 +141,8 @@ include_once(__DIR__ . '/../top-navbar.php');
             p.phone_number,
             r.cust_name,
             r.person_Name,
-            (SELECT COUNT(*) FROM order_detail od WHERE od.bill_id = r.bill_id) as item_count
+            (SELECT COUNT(*) FROM order_detail od WHERE od.bill_id = r.bill_id) as item_count,
+            (SELECT IFNULL(SUM(ra.amount), 0) FROM rent_amount ra WHERE ra.bill_id = r.bill_id) as ra_paid
         FROM phppos_rent r
         LEFT JOIN phppos_people p ON r.cust_id = p.person_id
         WHERE $whereSQL
@@ -620,7 +622,17 @@ include_once(__DIR__ . '/../top-navbar.php');
                                         }
 
                                         $rentAmount = !empty($row['rent_amount']) ? (float)$row['rent_amount'] : (!empty($row['amount']) ? (float)$row['amount'] : 0);
-                                        $balAmount  = !empty($row['bal_amount']) ? (float)$row['bal_amount'] : 0;
+                                        $raPaid     = isset($row['ra_paid']) ? (float)$row['ra_paid'] : 0;
+                                        $balCol     = !empty($row['bal_amount']) ? (float)$row['bal_amount'] : 0;
+
+                                        // In phppos_rent, 'bal_amount' represents the amount paid. If payments exist in rent_amount, use that sum.
+                                        $paidAmount = ($raPaid > 0) ? $raPaid : $balCol;
+                                        if (strcasecmp($row['pstatus'] ?? '', 'Paid') === 0 && $paidAmount == 0 && $rentAmount > 0) {
+                                            $paidAmount = $rentAmount;
+                                        }
+
+                                        // True remaining balance is Rent Amount minus Paid Amount
+                                        $balAmount = max(0, $rentAmount - $paidAmount);
                                     ?>
                                         <tr id="bill-row-<?php echo $row['bill_id']; ?>">
                                             <td style="text-align: center; color: var(--color-slate-400); font-size: 12px;">
