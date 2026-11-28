@@ -213,10 +213,10 @@ if($bill_by=='QUOTATION'){
                             <td style="padding: 0px; margin: 0px; width: 22%; vertical-align: top;">
                                 <?php if ($company_name == 'SAKAR TRADE LINK') { ?>
                                     <div style="text-align:left"> <img src="img/sakarQRICICI.jpeg" width="105px"> </div>
-                                    <div style="text-align:left; font-size:11px; word-break: break-all; margin-top: 4px;"> <b>UPI ID:<br>MSSAKARTRADELINK.eazypay@icici</b> </div>
+                                    <div style="text-align:left; font-size:10.5px; margin-top: 4px; line-height: 1.3;"> <b>UPI ID:<br><span style="font-size: 9.5px; font-weight: bold; white-space: nowrap;">MSSAKARTRADELINK.eazypay@icici</span></b> </div>
                                 <?php } else { ?>
-                                    <div style="text-align:left"> <img src="img/sri_qr_icici.jpg" width="105px"> </div>
-                                    <div style="text-align:left; font-size:11px; word-break: break-all; margin-top: 4px;"> <b>UPI ID:<br>srishringarrfashionstudio@icici</b> </div>
+                                    <div style="text-align:left"> <img src="quotation.jpeg" width="105px"> </div>
+                                    <div style="text-align:left; font-size:10.5px; margin-top: 4px; line-height: 1.3;"> <b>UPI ID:<br><span style="font-size: 9.5px; font-weight: bold; white-space: nowrap;">srishringarrfashionstudio@icici</span></b> </div>
                                 <?php } ?>
                             </td>
 

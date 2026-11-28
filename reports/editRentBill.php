@@ -183,35 +183,12 @@ include_once(__DIR__ . '/../top-navbar.php');
                 .page-body-wrapper {
                     padding-top: 58px !important;
                 }
-                #sidebar, .sidebar {
+                #sidebar {
                     position: fixed !important;
                     top: 58px;
                     left: 0;
                     bottom: 0;
-                    width: 240px !important;
-                    height: calc(100vh - 58px) !important;
-                    max-height: calc(100vh - 58px) !important;
-                    overflow-y: auto !important;
-                    overflow-x: hidden !important;
-                    z-index: 999;
-                    -webkit-overflow-scrolling: touch;
-                }
-                #sidebar .nav, .sidebar .nav {
-                    overflow: visible !important;
-                    padding-bottom: 90px !important;
-                }
-                #sidebar::-webkit-scrollbar, .sidebar::-webkit-scrollbar {
-                    width: 5px;
-                }
-                #sidebar::-webkit-scrollbar-track, .sidebar::-webkit-scrollbar-track {
-                    background: transparent;
-                }
-                #sidebar::-webkit-scrollbar-thumb, .sidebar::-webkit-scrollbar-thumb {
-                    background: #cbd5e1;
-                    border-radius: 4px;
-                }
-                #sidebar::-webkit-scrollbar-thumb:hover, .sidebar::-webkit-scrollbar-thumb:hover {
-                    background: #94a3b8;
+                    height: calc(100vh - 58px);
                 }
                 .main-panel {
                     margin-left: 240px;
