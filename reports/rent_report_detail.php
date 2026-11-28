@@ -134,8 +134,8 @@ $state = get_state($ss_orderid);
                     <!--<div style="text-align:left"> <img src="img/sakarQR.jpg" width="120px"> </div>-->
                     <!--<div style="text-align:left;font-size:14px;"> <b>UPI ID: 237382406008836@cnrb</b> </div>-->
                     
-                    <div style="text-align:left"> <img src="img/sakarQRICICI.jpeg" width="120px"> </div>
-                    <div style="text-align:left;font-size:14px;"> <b>UPI ID: MSSAKARTRADELINK.eazypay@icici</b> </div>
+                    <div style="text-align:left"> <img src="sakar_kotak_rent.jpeg" width="120px"> </div>
+                    <div style="text-align:left;font-size:14px;"> <b>UPI ID: srishringarr@kotak</b> </div>
                     
                     <br/>
                     
